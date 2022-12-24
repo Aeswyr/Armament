@@ -59,7 +59,7 @@ public class InputHandler : MonoBehaviour
         this.buttons[6].Set(ctx);
     }
 
-    public void Start(InputAction.CallbackContext ctx) {
+    public void StartButton(InputAction.CallbackContext ctx) {
         this.buttons[7].Set(ctx);
     }
 

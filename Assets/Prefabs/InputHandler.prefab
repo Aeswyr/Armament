@@ -174,7 +174,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7827850225990040884}
         m_TargetAssemblyTypeName: InputHandler, Assembly-CSharp
-        m_MethodName: Start
+        m_MethodName: StartButton
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
