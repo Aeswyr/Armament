@@ -16,7 +16,23 @@ public class FixedCollider : MonoBehaviour
     private List<FixedCollider> thisFrame = new();
 
     private bool dirty;
-    // Start is called before the first frame update
+    
+    public delegate void OnCollisionEnter(FixedCollider other);
+    public OnCollisionEnter onCollisionEnter {
+        get;
+        set;
+    }
+    public delegate void OnCollisionStay(FixedCollider other);
+    public OnCollisionStay onCollisionStay {
+        get;
+        set;
+    }
+    public delegate void OnCollisionExit(FixedCollider other);
+    public OnCollisionExit onCollisionExit {
+        get;
+        set;
+    }
+
     void Awake()
     {
         fTransform = GetComponent<FixedTransform>();
@@ -46,7 +62,7 @@ public class FixedCollider : MonoBehaviour
 
     // checks if this collider is colliding with the provided other collider
     public bool Colliding(FixedCollider other) {
-        return AABB(fTransform.position - (Fix64)0.5f * size, size, other.fTransform.position, (Fix64)0.5f * other.size);
+        return AABB(fTransform.position - (Fix64)0.5f * size, size, other.fTransform.position - (Fix64)0.5f * other.size, other.size);
     }
 
     private bool AABB(Vec2Fix aPos, Vec2Fix aSize, Vec2Fix bPos, Vec2Fix bSize) {
@@ -86,7 +102,7 @@ public class FixedCollider : MonoBehaviour
     // called automatically when a collision occurs, and invokes either onColliderEnter if needed
     public void Collide(FixedCollider other) {
         if (!thisFrame.Contains(other) && !collisions.Contains(other)) {
-            Debug.Log("Got that dog in em"); //invoke onColliderEnter
+            onCollisionEnter.Invoke(other); 
             
             thisFrame.Add(other);
             other.Collide(this);
@@ -95,15 +111,14 @@ public class FixedCollider : MonoBehaviour
 
     // checks if there are any colliders that were not collided with this frame and calls on collider exit or stay depending
     public void CheckCollisions() {
-
         for (int i = 0; i < collisions.Count; i++) {
 
             if (Colliding(collisions[i])) {
-                Debug.Log("Continuing to have that dog in em");
+                onCollisionStay.Invoke(collisions[i]);
             } else {
+                onCollisionExit.Invoke(collisions[i]);
                 collisions.RemoveAt(i);
                 i--;
-                Debug.Log("No longer got that dog in em");
             }
 
         }
