@@ -72,7 +72,7 @@ public class FixedCollider : MonoBehaviour
                 && aPos.y < bPos.y + bSize.y;
     }
 
-    void Update() {
+    void FixedUpdate() {
         Vec2Fix pos = fTransform.position - (Fix64)0.5 * size;
 
         Debug.DrawLine(new Vector3((float)pos.x, (float)pos.y, 0),
@@ -102,7 +102,7 @@ public class FixedCollider : MonoBehaviour
     // called automatically when a collision occurs, and invokes either onColliderEnter if needed
     public void Collide(FixedCollider other) {
         if (!thisFrame.Contains(other) && !collisions.Contains(other)) {
-            onCollisionEnter.Invoke(other); 
+            onCollisionEnter?.Invoke(other); 
             
             thisFrame.Add(other);
             other.Collide(this);
@@ -114,9 +114,9 @@ public class FixedCollider : MonoBehaviour
         for (int i = 0; i < collisions.Count; i++) {
 
             if (Colliding(collisions[i])) {
-                onCollisionStay.Invoke(collisions[i]);
+                onCollisionStay?.Invoke(collisions[i]);
             } else {
-                onCollisionExit.Invoke(collisions[i]);
+                onCollisionExit?.Invoke(collisions[i]);
                 collisions.RemoveAt(i);
                 i--;
             }

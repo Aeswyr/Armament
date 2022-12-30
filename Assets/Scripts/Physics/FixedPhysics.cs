@@ -10,6 +10,8 @@ public static class FixedPhysics {
     private static List<FixedCollider> dirty = new();
     private static List<FixedCollider> colliders = new();
 
+    private static List<FixedBody> physicsBodies = new();
+
     // updates the physics system, performing rigidbody movement and testing for collisions
     public static void Update() {
         foreach (var collider in dirty) {
@@ -26,6 +28,9 @@ public static class FixedPhysics {
         }
 
         dirty.Clear();
+
+        foreach (var fBody in physicsBodies)
+            fBody.PhysicsFrame();
     }
 
     // called automatically when a collider is moved or otherwise needs to be rechecked for collisions
@@ -45,10 +50,26 @@ public static class FixedPhysics {
             dirty.Remove(collider);
     }
 
+    public static void RegisterBody(FixedBody fBody) {
+        if (!physicsBodies.Contains(fBody))
+            physicsBodies.Add(fBody);
+    }
+
+    public static void DeregisterBody(FixedBody fBody) {
+        physicsBodies.Remove(fBody);
+    }
+
 }
 
 [Serializable]
 public struct Vec2Fix : IEquatable<Vec2Fix>, IComparable<Vec2Fix> {
+
+    public static Vec2Fix zero = new Vec2Fix((Fix64)0, (Fix64)0);
+    public static Vec2Fix one = new Vec2Fix((Fix64)1, (Fix64)1);
+    public static Vec2Fix up = new Vec2Fix((Fix64)0, (Fix64)1);
+    public static Vec2Fix down = new Vec2Fix((Fix64)0, (Fix64)(-1));
+    public static Vec2Fix left = new Vec2Fix((Fix64)(-1), (Fix64)0);
+    public static Vec2Fix right = new Vec2Fix((Fix64)1, (Fix64)0);
     public Fix64 x;
     public Fix64 y;
 
