@@ -166,5 +166,10 @@ public struct Vec2Fix : IEquatable<Vec2Fix>, IComparable<Vec2Fix> {
             EditorGUI.EndProperty();
         }
     }
-    
+}
+
+[Serializable]
+public struct FixedBox {
+    public Vec2Fix position;
+    public Vec2Fix size;
 }

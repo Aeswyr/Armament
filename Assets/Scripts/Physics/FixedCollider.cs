@@ -1,22 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using FixMath.NET;
 
-[RequireComponent(typeof(FixedTransform))]
-public class FixedCollider : MonoBehaviour
+public abstract class FixedCollider : MonoBehaviour
 {
-    private FixedTransform fTransform;
-    [SerializeField] private Vec2Fix size;
-    [SerializeField] private bool isTrigger;
-    [SerializeField] private Material mat;
-
-    private List<FixedCollider> collisions = new();
-    private List<FixedCollider> thisFrame = new();
-
-    private bool dirty;
-    
+    protected FixedTransform fTransform;
+    public FixedTransform fixedTransform {
+        get => fTransform;
+    }
+    protected List<FixedCollider> collisions = new();
+    protected List<FixedCollider> thisFrame = new();
+    protected bool dirty;
     public delegate void OnCollisionEnter(FixedCollider other);
     public OnCollisionEnter onCollisionEnter {
         get;
@@ -33,7 +27,14 @@ public class FixedCollider : MonoBehaviour
         set;
     }
 
-    void Awake()
+    public static bool AABB(Vec2Fix aPos, Vec2Fix aSize, Vec2Fix bPos, Vec2Fix bSize) {
+        return  bPos.x < aPos.x + aSize.x 
+                && aPos.x < bPos.x + bSize.x
+                && bPos.y < aPos.y + aSize.y 
+                && aPos.y < bPos.y + bSize.y;
+    }
+
+    protected void Awake()
     {
         fTransform = GetComponent<FixedTransform>();
         MarkDirty();
@@ -60,44 +61,7 @@ public class FixedCollider : MonoBehaviour
         FixedPhysics.DeregisterCollider(this);
     }
 
-    // checks if this collider is colliding with the provided other collider
-    public bool Colliding(FixedCollider other) {
-        return AABB(fTransform.position - (Fix64)0.5f * size, size, other.fTransform.position - (Fix64)0.5f * other.size, other.size);
-    }
-
-    private bool AABB(Vec2Fix aPos, Vec2Fix aSize, Vec2Fix bPos, Vec2Fix bSize) {
-        return  bPos.x < aPos.x + aSize.x 
-                && aPos.x < bPos.x + bSize.x
-                && bPos.y < aPos.y + aSize.y 
-                && aPos.y < bPos.y + bSize.y;
-    }
-
-    void FixedUpdate() {
-        Vec2Fix pos = fTransform.position - (Fix64)0.5 * size;
-
-        Debug.DrawLine(new Vector3((float)pos.x, (float)pos.y, 0),
-         new Vector3((float)(pos.x + size.x), (float)pos.y, 0), Color.green);
-        Debug.DrawLine(new Vector3((float)(pos.x + size.x), (float)pos.y, 0),
-         new Vector3((float)(pos.x + size.x), (float)(pos.y + size.y), 0), Color.green);
-        Debug.DrawLine(new Vector3((float)(pos.x + size.x), (float)(pos.y + size.y), 0),
-         new Vector3((float)pos.x, (float)(pos.y + size.y), 0), Color.green);
-        Debug.DrawLine(new Vector3((float)pos.x, (float)(pos.y + size.y), 0),
-         new Vector3((float)pos.x, (float)pos.y, 0), Color.green);
-    }
-
-    private void OnDrawGizmos() {
-        Gizmos.color = new Color(1, 0, 0, 1f);
-        Mesh mesh = new Mesh();
-        mesh.vertices = new Vector3[] {new Vector3(transform.position.x, transform.position.y),
-                                        new Vector3(transform.position.x + (float)size.x, transform.position.y),
-                                        new Vector3(transform.position.x + (float)size.x, transform.position.y + (float)size.y),
-                                        new Vector3(transform.position.x, transform.position.y + (float)size.y)};
-        mesh.triangles = new int[] { 0, 1, 2, 2, 3, 0};
-        mesh.RecalculateNormals();
-        Gizmos.DrawMesh(mesh, transform.position);
-        Gizmos.color = new Color(1, 0, 0, 1f);
-        //Gizmos.DrawWireMesh(mesh, transform.position);
-    }
+    public abstract bool Colliding(FixedCollider other);
 
     // called automatically when a collision occurs, and invokes either onColliderEnter if needed
     public void Collide(FixedCollider other) {

@@ -983,8 +983,17 @@ namespace FixMath.NET
 
         public string FixedToString() {
             
+            bool negative = this < Fix64.Zero;
+
             long whole = (long)this;
             Fix64 tmp = this - Fix64.Floor(this);
+
+            if (negative) {
+                Fix64 abs = Fix64.Abs(this);
+                whole = (long)abs;
+                tmp = abs - Fix64.Floor(abs);
+            }
+
             
 
             int IntPow(int x, uint pow)
@@ -1009,6 +1018,8 @@ namespace FixMath.NET
             string val = whole.ToString();
             if (dec != 0)
                 val += $".{dec}";
+            if (negative)
+                val = '-'+ val;
             return val;
         }
 
@@ -1016,12 +1027,13 @@ namespace FixMath.NET
             if (val.Contains('.')) {
                 string[] sides = val.Split('.');
 
-                int r1 = 0;
-                int.TryParse(sides[0], out r1);
-                int r2 = 0;
-                int.TryParse(sides[1], out r2);
+                int.TryParse(sides[0], out int r1);
+                int.TryParse(sides[1], out int r2);
+                Fix64 sign = Fix64.One;
+                if (sides[0].Contains('-'))
+                    sign = -Fix64.One;
                 Fix64 f1 = new(r1 * ONE);
-                Fix64 f2 = new(r2 * ONE);
+                Fix64 f2 = sign * new Fix64(r2 * ONE);
 
 
                 int IntPow(int x, uint pow)
@@ -1039,7 +1051,7 @@ namespace FixMath.NET
 
                 int p = IntPow(10, (uint)sides[1].Length);
                 Fix64 places = new Fix64(p);
-                Fix64 o = f1 + (f2 / places);
+                Fix64 o = (f1 + (f2 / places));
                 
                 return o;
                 
