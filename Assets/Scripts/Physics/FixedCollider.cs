@@ -44,19 +44,19 @@ public abstract class FixedCollider : MonoBehaviour
         MarkDirty();
     }
 
-    void OnEnable() {
+    protected void OnEnable() {
         fTransform.onDirty += MarkDirty;
         FixedPhysics.RegisterCollider(this);
 
         MarkDirty();
     }
 
-    void OnDisable() {
+    protected void OnDisable() {
         fTransform.onDirty -= MarkDirty;
         FixedPhysics.DeregisterCollider(this);
     }
 
-    void OnDestroy() {
+    protected void OnDestroy() {
         fTransform.onDirty -= MarkDirty;
         FixedPhysics.DeregisterCollider(this);
     }

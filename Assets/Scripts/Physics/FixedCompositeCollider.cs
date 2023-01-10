@@ -13,16 +13,20 @@ public class FixedCompositeCollider : FixedCollider
     private Vec2Fix boundingSize;
     // checks if this collider is colliding with the provided other collider
     public override bool Colliding(FixedCollider other) {
+        if (other.transform.root == transform.root) // prevent collisions between related objects
+            return false;
+
         if (other is FixedBoxCollider) {
             if (CompositeAABB((FixedBoxCollider)other))
                 return true;
+            return false;
         } else if (other is FixedCompositeCollider){
             FixedCompositeCollider col = (FixedCompositeCollider)other;
 
             if (boxes == null || col.boxes == null)
                 return false;
 
-            if (FixedCollider.AABB(fTransform.position + boundingOffset, boundingSize, col.fTransform.position + col.boundingOffset, col.boundingSize)) 
+            if (FixedCollider.AABB(fTransform.position + boundingOffset + (Fix64)0.5f * boundingSize, boundingSize, col.fTransform.position + col.boundingOffset, col.boundingSize)) 
                 foreach (var box in boxes) {
                     foreach (var oBox in col.boxes) {
                         if (FixedCollider.AABB(fTransform.position + box.position - (Fix64)0.5f * box.size, box.size,
@@ -43,7 +47,7 @@ public class FixedCompositeCollider : FixedCollider
     public bool CompositeAABB(FixedBoxCollider other) {
         if (boxes == null || boxes.Count == 0)
                 return false;
-        
+
         if (FixedCollider.AABB(fTransform.position + boundingOffset, boundingSize, other.fixedTransform.position - (Fix64)0.5f * other.Size, other.Size))
             foreach (var box in boxes) {
                 if (FixedCollider.AABB(fTransform.position + box.position - (Fix64)0.5f * box.size, box.size,
@@ -70,7 +74,7 @@ public class FixedCompositeCollider : FixedCollider
         }
 
         Vec2Fix bsize = boundingSize;
-        Vec2Fix bpos = fTransform.position + boundingOffset + (Fix64)0.5 * boundingSize;
+        Vec2Fix bpos = fTransform.position + boundingOffset;
 
         Debug.DrawLine(new Vector3((float)bpos.x, (float)bpos.y, 0),
         new Vector3((float)(bpos.x + bsize.x), (float)bpos.y, 0), Color.cyan);
@@ -90,7 +94,7 @@ public class FixedCompositeCollider : FixedCollider
         FixedTransform fTransform  = GetComponent<FixedTransform>();
 
         Vec2Fix bsize = boundingSize;
-        Vec2Fix bpos = fTransform.position + boundingOffset + (Fix64)0.5 * boundingSize;
+        Vec2Fix bpos = fTransform.position + boundingOffset;
 
         Gizmos.DrawLine(new Vector3((float)bpos.x, (float)bpos.y, 0),
         new Vector3((float)(bpos.x + bsize.x), (float)bpos.y, 0));
@@ -140,6 +144,6 @@ public class FixedCompositeCollider : FixedCollider
         }
 
         boundingSize = new Vec2Fix(corners[1] - corners[0], corners[3] - corners[2]);
-        boundingOffset = new Vec2Fix (corners[0] - (Fix64)0.5f * boundingSize.x, corners[2] - (Fix64)0.5f * boundingSize.y);
+        boundingOffset = new Vec2Fix (corners[0], corners[2]);
     }
 }

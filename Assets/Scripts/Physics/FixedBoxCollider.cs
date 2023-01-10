@@ -16,6 +16,9 @@ public class FixedBoxCollider : FixedCollider
 
     // checks if this collider is colliding with the provided other collider
     public override bool Colliding(FixedCollider other) {
+        if (other.transform.root == transform.root) // prevent collisions between related objects
+            return false;
+
         if (other is FixedBoxCollider) {
             FixedBoxCollider col = (FixedBoxCollider)other;
             return FixedCollider.AABB(fTransform.position - (Fix64)0.5f * size, size, col.fTransform.position - (Fix64)0.5f * col.size, col.size);
