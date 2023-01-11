@@ -26,11 +26,11 @@ public class FixedCompositeCollider : FixedCollider
             if (boxes == null || col.boxes == null)
                 return false;
 
-            if (FixedCollider.AABB(fTransform.position + boundingOffset + (Fix64)0.5f * boundingSize, boundingSize, col.fTransform.position + col.boundingOffset, col.boundingSize)) 
+            if (FixedCollider.AABB(fTransform.position + boundingOffset + Fix64.Half * boundingSize, boundingSize, col.fTransform.position + col.boundingOffset, col.boundingSize)) 
                 foreach (var box in boxes) {
                     foreach (var oBox in col.boxes) {
-                        if (FixedCollider.AABB(fTransform.position + box.position - (Fix64)0.5f * box.size, box.size,
-                                        col.fTransform.position + oBox.position - (Fix64)0.5f * oBox.size, oBox.size))
+                        if (FixedCollider.AABB(fTransform.position + box.position - Fix64.Half * box.size, box.size,
+                                        col.fTransform.position + oBox.position - Fix64.Half * oBox.size, oBox.size))
                             return true;
                     }
                 }
@@ -48,10 +48,10 @@ public class FixedCompositeCollider : FixedCollider
         if (boxes == null || boxes.Count == 0)
                 return false;
 
-        if (FixedCollider.AABB(fTransform.position + boundingOffset, boundingSize, other.fixedTransform.position - (Fix64)0.5f * other.Size, other.Size))
+        if (FixedCollider.AABB(fTransform.position + boundingOffset, boundingSize, other.ColliderPos, other.Size))
             foreach (var box in boxes) {
-                if (FixedCollider.AABB(fTransform.position + box.position - (Fix64)0.5f * box.size, box.size,
-                                        other.fixedTransform.position - (Fix64)0.5f * other.Size, other.Size))
+                if (FixedCollider.AABB(fTransform.position + box.position - Fix64.Half * box.size, box.size,
+                                        other.ColliderPos, other.Size))
                     return true;
             }
         return false;
@@ -61,7 +61,7 @@ public class FixedCompositeCollider : FixedCollider
 
         foreach (var box in boxes) {
             Vec2Fix size = box.size;
-            Vec2Fix pos = fTransform.position + box.position - (Fix64)0.5 * size;
+            Vec2Fix pos = fTransform.position + box.position - Fix64.Half * size;
 
             Debug.DrawLine(new Vector3((float)pos.x, (float)pos.y, 0),
             new Vector3((float)(pos.x + size.x), (float)pos.y, 0), Color.red);
@@ -109,7 +109,7 @@ public class FixedCompositeCollider : FixedCollider
 
         foreach (var box in boxes) {
             Vec2Fix size = box.size;
-            Vec2Fix pos = fTransform.position + box.position - (Fix64)0.5 * size;
+            Vec2Fix pos = fTransform.position + box.position - Fix64.Half * size;
 
             Gizmos.DrawLine(new Vector3((float)pos.x, (float)pos.y, 0),
             new Vector3((float)(pos.x + size.x), (float)pos.y, 0));
@@ -126,21 +126,21 @@ public class FixedCompositeCollider : FixedCollider
         if (boxes == null || boxes.Count == 0)
             return;
         Fix64[] corners = new Fix64[] {
-            boxes[0].position.x - (Fix64)0.5f * boxes[0].size.x,
-            boxes[0].position.x + (Fix64)0.5f * boxes[0].size.x,
-            boxes[0].position.y - (Fix64)0.5f * boxes[0].size.y,
-            boxes[0].position.y + (Fix64)0.5f * boxes[0].size.y
+            boxes[0].position.x - Fix64.Half * boxes[0].size.x,
+            boxes[0].position.x + Fix64.Half * boxes[0].size.x,
+            boxes[0].position.y - Fix64.Half * boxes[0].size.y,
+            boxes[0].position.y + Fix64.Half * boxes[0].size.y
 
         };
         foreach (var box in boxes) {
-            if (box.position.x - (Fix64)0.5f * box.size.x < corners[0])
-                corners[0] = box.position.x - (Fix64)0.5f * box.size.x;
-            if (box.position.x + (Fix64)0.5f * box.size.x > corners[1])
-                corners[1] = box.position.x + (Fix64)0.5f * box.size.x;
-            if (box.position.y - (Fix64)0.5f * box.size.y < corners[2])
-                corners[2] = box.position.y - (Fix64)0.5f * box.size.y;
-            if (box.position.y + (Fix64)0.5f * box.size.y > corners[3])
-                corners[3] = box.position.y + (Fix64)0.5f * box.size.y;
+            if (box.position.x - Fix64.Half * box.size.x < corners[0])
+                corners[0] = box.position.x - Fix64.Half * box.size.x;
+            if (box.position.x + Fix64.Half * box.size.x > corners[1])
+                corners[1] = box.position.x + Fix64.Half * box.size.x;
+            if (box.position.y - Fix64.Half * box.size.y < corners[2])
+                corners[2] = box.position.y - Fix64.Half * box.size.y;
+            if (box.position.y + Fix64.Half * box.size.y > corners[3])
+                corners[3] = box.position.y + Fix64.Half * box.size.y;
         }
 
         boundingSize = new Vec2Fix(corners[1] - corners[0], corners[3] - corners[2]);

@@ -43,33 +43,36 @@ public class FixedBody : MonoBehaviour
 
     private void Resolve(CollisionInfo info) {
 
-        Vec2Fix offset = new Vec2Fix();
+        Vec2Fix offset = -velocity;
+        FixedBoxCollider primary = (FixedBoxCollider)info.primary;
+        FixedBoxCollider secondary = (FixedBoxCollider)info.secondary;
 
-        if (velocity.x > Fix64.Zero)
-            offset.x = info.primary.fixedTransform.position.x + ((FixedBoxCollider)info.primary).Size.x - info.secondary.fixedTransform.position.x;
-        else if (velocity.x < Fix64.Zero)
-            offset.x = info.primary.fixedTransform.position.x - (info.secondary.fixedTransform.position.x + ((FixedBoxCollider)info.secondary).Size.x);
-
-        if (velocity.y > Fix64.Zero)
-            offset.y = info.primary.fixedTransform.position.y + ((FixedBoxCollider)info.primary).Size.y - info.secondary.fixedTransform.position.y;
-        else if (velocity.y < Fix64.Zero)
-            offset.y = info.primary.fixedTransform.position.y - (info.secondary.fixedTransform.position.y + ((FixedBoxCollider)info.secondary).Size.y);
-
-        if (Fix64.Abs(info.primary.fixedTransform.position.x - info.secondary.fixedTransform.position.x) > Fix64.Abs(info.primary.fixedTransform.position.y - info.secondary.fixedTransform.position.y)) {
-            offset.y = Fix64.Zero;
-        } else if (Fix64.Abs(info.primary.fixedTransform.position.x - info.secondary.fixedTransform.position.x) < Fix64.Abs(info.primary.fixedTransform.position.y - info.secondary.fixedTransform.position.y)) {
+        FixedBoxCollider col;
+        if ((col = FixedPhysics.IsPhysicsColliding(primary, velocity.y * Vec2Fix.down)) == null) {
             offset.x = Fix64.Zero;
+        } else if (col != info.secondary) {
+        } else {
+            if (velocity.x > Fix64.Zero) {
+                offset.x = secondary.ColliderPos.x - (primary.Size.x + primary.ColliderPos.x);
+            } else if (velocity.x < Fix64.Zero) {
+                offset.x = (secondary.Size.x + secondary.ColliderPos.x) - primary.ColliderPos.x;
+            }
         }
 
-        fTransform.position -= offset;
+        if ((col = FixedPhysics.IsPhysicsColliding(primary, velocity.x * Vec2Fix.left)) == null) {
+            offset.y = Fix64.Zero;
+        } else if (col != info.secondary) {
+        } else {
+            if (velocity.y > Fix64.Zero) {
+                offset.y = secondary.ColliderPos.y - (primary.Size.y + primary.ColliderPos.y);
+            } else if (velocity.y < Fix64.Zero) {
+                offset.y = (secondary.Size.y + secondary.ColliderPos.y) - primary.ColliderPos.y;
+            }
+        }
 
-        Vec2Fix vel = new Vec2Fix();
-        if (offset.x != Fix64.Zero)
-            vel.x = Fix64.Zero;
-        if (offset.y != Fix64.Zero)
-            vel.y = Fix64.Zero;
+        fTransform.position += offset;
 
-        velocity = velocity;
+        velocity = new Vec2Fix(velocity.x * (Fix64)Fix64.Sign(offset.x), velocity.y * (Fix64)Fix64.Sign(offset.y));
         
     }
 

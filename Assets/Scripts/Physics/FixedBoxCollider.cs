@@ -11,6 +11,8 @@ public class FixedBoxCollider : FixedCollider
     public Vec2Fix Size {
         get => size;
     }
+
+    public Vec2Fix ColliderPos => fTransform.position - Fix64.Half * size;
     public bool isTrigger;
     [SerializeField] private Material mat;
 
@@ -21,7 +23,7 @@ public class FixedBoxCollider : FixedCollider
 
         if (other is FixedBoxCollider) {
             FixedBoxCollider col = (FixedBoxCollider)other;
-            return FixedCollider.AABB(fTransform.position - (Fix64)0.5f * size, size, col.fTransform.position - (Fix64)0.5f * col.size, col.size);
+            return FixedCollider.AABB(ColliderPos, size, col.ColliderPos, col.size);
         } else if (other is FixedCompositeCollider){
             if (((FixedCompositeCollider)other).CompositeAABB(this))
                 return true;
@@ -30,7 +32,7 @@ public class FixedBoxCollider : FixedCollider
     }
 
     void FixedUpdate() {
-        Vec2Fix pos = fTransform.position - (Fix64)0.5 * size;
+        Vec2Fix pos = ColliderPos;
 
         Debug.DrawLine(new Vector3((float)pos.x, (float)pos.y, 0),
          new Vector3((float)(pos.x + size.x), (float)pos.y, 0), Color.green);
@@ -45,7 +47,7 @@ public class FixedBoxCollider : FixedCollider
     private void OnDrawGizmos() {
         Gizmos.color = Color.green;
 
-        Vec2Fix pos = GetComponent<FixedTransform>().position - (Fix64)0.5 * size;
+        Vec2Fix pos = GetComponent<FixedTransform>().position - Fix64.Half * size;
 
         Gizmos.DrawLine(new Vector3((float)pos.x, (float)pos.y, 0),
          new Vector3((float)(pos.x + size.x), (float)pos.y, 0));

@@ -9,6 +9,7 @@ public static class FixedPhysics {
 
     private static List<FixedCollider> dirty = new();
     private static List<FixedCollider> colliders = new();
+    private static List<FixedBoxCollider> physicsColliders = new();
 
     private static List<FixedBody> physicsBodies = new();
 
@@ -40,14 +41,20 @@ public static class FixedPhysics {
 
     // registers a collider with the physics system
     public static void RegisterCollider(FixedCollider collider) {
-        if (!colliders.Contains(collider))
+        if (!colliders.Contains(collider)) {
             colliders.Add(collider);
+            if (collider is FixedBoxCollider && !((FixedBoxCollider)collider).isTrigger)
+                physicsColliders.Add((FixedBoxCollider)collider);
+        }
     }
 
     public static void DeregisterCollider(FixedCollider collider) {
         colliders.Remove(collider);
         if (dirty.Contains(collider))
             dirty.Remove(collider);
+        if (collider is FixedBoxCollider && physicsColliders.Contains((FixedBoxCollider)collider)) {
+            physicsColliders.Remove((FixedBoxCollider)collider);
+        }
     }
 
     public static void RegisterBody(FixedBody fBody) {
@@ -57,6 +64,14 @@ public static class FixedPhysics {
 
     public static void DeregisterBody(FixedBody fBody) {
         physicsBodies.Remove(fBody);
+    }
+
+    public static FixedBoxCollider IsPhysicsColliding(FixedBoxCollider primary, Vec2Fix offset) {
+        foreach (var collider in physicsColliders) {
+            if (collider != primary && FixedCollider.AABB(primary.ColliderPos + offset, primary.Size, collider.ColliderPos, collider.Size))
+                return collider;
+        }
+        return null;
     }
 
 }
