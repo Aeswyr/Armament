@@ -11,18 +11,26 @@ public abstract class FixedCollider : MonoBehaviour
     protected List<FixedCollider> collisions = new();
     protected List<FixedCollider> thisFrame = new();
     protected bool dirty;
-    public delegate void OnCollisionEnter(FixedCollider other);
+    public delegate void OnCollisionEnter(CollisionInfo info);
     public OnCollisionEnter onCollisionEnter {
         get;
         set;
     }
-    public delegate void OnCollisionStay(FixedCollider other);
+    public delegate void OnCollisionStay(CollisionInfo info);
     public OnCollisionStay onCollisionStay {
         get;
         set;
     }
-    public delegate void OnCollisionExit(FixedCollider other);
+    public delegate void OnCollisionExit(CollisionInfo info);
     public OnCollisionExit onCollisionExit {
+        get;
+        set;
+    }
+
+
+    //dont interact with this. if you do and stuff breaks, thats your problem, not mine
+    public delegate void OnPhysicsResolution(CollisionInfo info);
+    public OnPhysicsResolution onPhysicsResolution {
         get;
         set;
     }
@@ -66,7 +74,15 @@ public abstract class FixedCollider : MonoBehaviour
     // called automatically when a collision occurs, and invokes either onColliderEnter if needed
     public void Collide(FixedCollider other) {
         if (!thisFrame.Contains(other) && !collisions.Contains(other)) {
-            onCollisionEnter?.Invoke(other); 
+            CollisionInfo info = new CollisionInfo(this, other);
+            onCollisionEnter?.Invoke(info);
+
+            if (this is FixedBoxCollider && !((FixedBoxCollider)this).isTrigger
+                && other is FixedBoxCollider && !((FixedBoxCollider)other).isTrigger) {
+                onPhysicsResolution?.Invoke(info);
+                other.onCollisionEnter?.Invoke(new CollisionInfo(other, this));
+                return;
+            }
             
             thisFrame.Add(other);
             other.Collide(this);
@@ -78,9 +94,9 @@ public abstract class FixedCollider : MonoBehaviour
         for (int i = 0; i < collisions.Count; i++) {
 
             if (Colliding(collisions[i])) {
-                onCollisionStay?.Invoke(collisions[i]);
+                onCollisionStay?.Invoke(new CollisionInfo(this, collisions[i]));
             } else {
-                onCollisionExit?.Invoke(collisions[i]);
+                onCollisionExit?.Invoke(new CollisionInfo(this, collisions[i]));
                 collisions.RemoveAt(i);
                 i--;
             }
@@ -105,5 +121,14 @@ public abstract class FixedCollider : MonoBehaviour
     // marks this collider as no longer dirty for internal operations
     public void Undirty() {
         dirty = false;
+    }
+}
+
+public struct CollisionInfo {
+    public FixedCollider primary, secondary;
+    
+    public CollisionInfo(FixedCollider primary, FixedCollider secondary) {
+        this.primary = primary;
+        this.secondary = secondary;
     }
 }

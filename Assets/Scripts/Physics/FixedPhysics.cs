@@ -14,6 +14,9 @@ public static class FixedPhysics {
 
     // updates the physics system, performing rigidbody movement and testing for collisions
     public static void Update() {
+        foreach (var fBody in physicsBodies)
+            fBody.PhysicsFrame();
+        
         foreach (var collider in dirty) {
             foreach (var target in colliders) {
                 if (collider != target && collider.Colliding(target)) {
@@ -28,9 +31,6 @@ public static class FixedPhysics {
         }
 
         dirty.Clear();
-
-        foreach (var fBody in physicsBodies)
-            fBody.PhysicsFrame();
     }
 
     // called automatically when a collider is moved or otherwise needs to be rechecked for collisions

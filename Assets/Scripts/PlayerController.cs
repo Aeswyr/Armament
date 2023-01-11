@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
         fBody.velocity = (Fix64)0.1f * (Vec2Fix)input.dir;
     }
 
-    void OnCollide(FixedCollider col) {
+    void OnCollide(CollisionInfo info) {
         Debug.Log("did a collision");
     }
 }

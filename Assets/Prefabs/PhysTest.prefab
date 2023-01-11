@@ -216,4 +216,14 @@ MonoBehaviour:
         m_rawValue: 4294967296
       y:
         m_rawValue: 2147483648
+  - position:
+      x:
+        m_rawValue: -536870912
+      y:
+        m_rawValue: 0
+    size:
+      x:
+        m_rawValue: 4294967296
+      y:
+        m_rawValue: 2147483648
   mat: {fileID: 0}
