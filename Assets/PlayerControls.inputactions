@@ -93,7 +93,7 @@
                 {
                     "name": "up",
                     "id": "8526d8c7-b66e-4cc1-bbe9-447f1e9af48f",
-                    "path": "<Keyboard>/space",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -147,17 +147,6 @@
                 },
                 {
                     "name": "",
-                    "id": "a2e932f5-1e53-495b-a51d-9b7451c09666",
-                    "path": "<HID::Logitech Logitech Dual Action>/hat",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Move",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "7d7f6fb6-4e4f-48dd-87ce-a851f52e8d06",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
@@ -191,17 +180,6 @@
                 },
                 {
                     "name": "",
-                    "id": "061b802c-bb0c-48bd-9b03-667494a5c341",
-                    "path": "<HID::Logitech Logitech Dual Action>/button4",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Light1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "c370d050-2c1a-4e86-a850-e6a7e5366e6d",
                     "path": "<Gamepad>/buttonNorth",
                     "interactions": "",
@@ -215,17 +193,6 @@
                     "name": "",
                     "id": "9192f1c2-2908-42b4-b0d2-c2e6fd7acfa0",
                     "path": "<Keyboard>/i",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Heavy1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4a5f2840-c560-425c-b37a-3638acb5b378",
-                    "path": "<HID::Logitech Logitech Dual Action>/button3",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -257,17 +224,6 @@
                 },
                 {
                     "name": "",
-                    "id": "e8e67684-6c01-4810-9df9-c76464a5aca2",
-                    "path": "<HID::Logitech Logitech Dual Action>/trigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Light2",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "a9b2cdec-827e-48ba-a0ee-82caa5ca2fb9",
                     "path": "<Gamepad>/buttonWest",
                     "interactions": "",
@@ -281,17 +237,6 @@
                     "name": "",
                     "id": "b8383da0-4d91-430a-9c33-197eddb05415",
                     "path": "<Keyboard>/k",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Heavy2",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e9b63d97-db97-4717-86f2-b59b44c3b971",
-                    "path": "<HID::Logitech Logitech Dual Action>/button2",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -323,19 +268,8 @@
                 },
                 {
                     "name": "",
-                    "id": "4c4aff4a-0e2f-4d2f-b41f-7dc0b19d601b",
-                    "path": "<HID::Logitech Logitech Dual Action>/button6",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Meter",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "00583c1e-e421-40f8-a2e0-e7ce3bd81cda",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -356,19 +290,8 @@
                 },
                 {
                     "name": "",
-                    "id": "73ef69e0-1192-4424-bfe6-1b88366539d8",
-                    "path": "<HID::Logitech Logitech Dual Action>/button5",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "620fab95-4dd1-4c05-bb6e-a2d0ac35aa51",
-                    "path": "<Gamepad>/leftTrigger",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -391,17 +314,6 @@
                     "name": "",
                     "id": "717af8b1-8e8b-4b4b-b480-4d0420df70e4",
                     "path": "<Gamepad>/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Start",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "eacfeac2-39d5-40e2-9272-443b9a835cd9",
-                    "path": "<HID::Logitech Logitech Dual Action>/button10",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

@@ -7,6 +7,8 @@ using System.Collections.Generic;
 
 public static class FixedPhysics {
 
+    private const int FPS = 60;
+    public static readonly Fix64 fixedTimestep = Fix64.One / (Fix64)FPS;
     private static List<FixedCollider> dirty = new();
     private static List<FixedCollider> colliders = new();
     private static List<FixedBoxCollider> physicsColliders = new();

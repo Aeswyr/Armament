@@ -203,6 +203,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5139772e652c3954d9072bf014c930f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonCount: 1
-  bufferFrames: 5
-  bufferEnabled: 1
+  buttonCount: 8
+  bufferFrames: 0
+  bufferEnabled: 0

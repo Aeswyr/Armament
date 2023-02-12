@@ -7,6 +7,7 @@ using FixMath.NET;
 public class FixedBody : MonoBehaviour
 {
     private FixedTransform fTransform;
+    private FixedBounds bounds;
     public Vec2Fix velocity {
         get;
         set;
@@ -15,6 +16,7 @@ public class FixedBody : MonoBehaviour
     public Fix64 gravity;
     void Awake()
     {
+        bounds = GetComponent<FixedBounds>();
         fTransform = GetComponent<FixedTransform>();
         FixedPhysics.RegisterBody(this);
         foreach (var collider in GetComponentsInChildren<FixedBoxCollider>(true))
@@ -47,38 +49,37 @@ public class FixedBody : MonoBehaviour
         FixedBoxCollider primary = (FixedBoxCollider)info.primary;
         FixedBoxCollider secondary = (FixedBoxCollider)info.secondary;
 
-        FixedBoxCollider col;
-        if ((col = FixedPhysics.IsPhysicsColliding(primary, velocity.y * Vec2Fix.down)) == null) {
-            offset.x = Fix64.Zero;
-        } else if (col != info.secondary) {
+        if (primary.fixedTransform.position.x > secondary.fixedTransform.position.x) {
+            offset.x = secondary.ColliderPos.x - (primary.Size.x + primary.ColliderPos.x);
         } else {
-            if (velocity.x > Fix64.Zero) {
-                offset.x = secondary.ColliderPos.x - (primary.Size.x + primary.ColliderPos.x);
-            } else if (velocity.x < Fix64.Zero) {
-                offset.x = (secondary.Size.x + secondary.ColliderPos.x) - primary.ColliderPos.x;
-            }
+            offset.x = (secondary.Size.x + secondary.ColliderPos.x) - primary.ColliderPos.x;
         }
-
-        if ((col = FixedPhysics.IsPhysicsColliding(primary, velocity.x * Vec2Fix.left)) == null) {
-            offset.y = Fix64.Zero;
-        } else if (col != info.secondary) {
-        } else {
-            if (velocity.y > Fix64.Zero) {
-                offset.y = secondary.ColliderPos.y - (primary.Size.y + primary.ColliderPos.y);
-            } else if (velocity.y < Fix64.Zero) {
-                offset.y = (secondary.Size.y + secondary.ColliderPos.y) - primary.ColliderPos.y;
-            }
-        }
+        offset.y = Fix64.Zero;
 
         fTransform.position += offset;
-
-        velocity = new Vec2Fix(velocity.x * (Fix64)Fix64.Sign(offset.x), velocity.y * (Fix64)Fix64.Sign(offset.y));
         
     }
 
     public void PhysicsFrame() {
-        velocity += gravity * Vec2Fix.down;
+        velocity += FixedPhysics.fixedTimestep * gravity * Vec2Fix.down;
         if (velocity != Vec2Fix.zero)
-            fTransform.position += velocity;
+            fTransform.position += FixedPhysics.fixedTimestep * velocity;
+        
+
+        if (bounds != null) {
+            Vec2Fix bound = fTransform.position;
+            if (fTransform.position.x > bounds.right) {
+                bound.x = bounds.right;
+            } else if (fTransform.position.x < bounds.left) {
+                bound.x = bounds.left;
+            }
+
+            if (fTransform.position.y > bounds.up) {
+                bound.y = bounds.up;
+            } else if (fTransform.position.y < bounds.down) {
+                bound.y = bounds.down;
+            }
+            fTransform.position = bound;
+        }
     }
 }
