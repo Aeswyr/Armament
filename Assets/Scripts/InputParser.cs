@@ -63,7 +63,7 @@ public class InputParser : MonoBehaviour
         if (inputBuffer[inputPointer] == null)
             return false;
         foreach (var input in inputBuffer[inputPointer]) {
-            if (input.button == Button.D && input.state == ButtonState.PRESSED || input.state == ButtonState.DOWN)
+            if (input.button == Button.D && (input.state == ButtonState.PRESSED || input.state == ButtonState.DOWN))
                 return true;
         }
 
@@ -79,6 +79,18 @@ public class InputParser : MonoBehaviour
 
 
         return false;
+    }
+
+    public bool DebugL1Pressed() {
+        if (input == null)
+            return false;
+        return input.light1.pressed;
+    }
+
+    public bool DebugH1Pressed() {
+        if (input == null)
+            return false;
+        return input.heavy1.pressed;
     }
 
     public bool Released(Button button) {

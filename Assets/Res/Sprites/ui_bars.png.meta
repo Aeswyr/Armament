@@ -105,7 +105,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ui_topBars_0
+      name: ui_bars_0
       rect:
         serializedVersion: 2
         x: 15
@@ -119,14 +119,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ca1b997684258d841958059f65a908cd
-      internalID: -2057704537
+      spriteID: eee0214ac97b4dc4d81c00fed189bd9d
+      internalID: 2092925150
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_topBars_1
+      name: ui_bars_1
       rect:
         serializedVersion: 2
         x: 73
@@ -140,14 +140,35 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 80ac67ac1753b4b4eaa9f7a222c27b7d
-      internalID: 1837216973
+      spriteID: 9e470abcf63983c4991fd491a771003a
+      internalID: 442969237
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_topBars_2
+      name: ui_bars_2
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 392
+        width: 374
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 605d0a2f59c70974499fbf6ff0d1b0f5
+      internalID: -1314556928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ui_bars_3
       rect:
         serializedVersion: 2
         x: 473
@@ -161,14 +182,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4354fde450fd98947888f8c2df7f565e
-      internalID: -1021588513
+      spriteID: fded4aa799c408f42a5b318d8b511242
+      internalID: 1374819672
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_topBars_3
+      name: ui_bars_4
       rect:
         serializedVersion: 2
         x: 7
@@ -182,14 +203,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5137499e8963e8241ac7c1f99c3dd06b
-      internalID: -2077482099
+      spriteID: 16d3cf20223dbb843af6be557dbafb2d
+      internalID: -269193865
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_topBars_4
+      name: ui_bars_5
       rect:
         serializedVersion: 2
         x: 64
@@ -203,14 +224,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 117efa3dd7d817a4a89b0b032253e3d5
-      internalID: -223042560
+      spriteID: 3b34a5592852f3a4b83bfc62b8d4edea
+      internalID: 1115032537
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_topBars_5
+      name: ui_bars_6
       rect:
         serializedVersion: 2
         x: 465
@@ -224,8 +245,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fc28ff18c2e45a84ba984461f08816fd
-      internalID: -1199540313
+      spriteID: 0be97dd0845e6124180d16735dd706b3
+      internalID: -205891248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ui_bars_12
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 69
+        width: 266
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b9dffb57f4680084da427597b6ac3d96
+      internalID: -739787086
       vertices: []
       indices: 
       edges: []
@@ -241,12 +283,19 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ui_topBars_1: 1837216973
-      ui_topBars_4: -223042560
-      ui_topBars_0: -2057704537
-      ui_topBars_3: -2077482099
-      ui_topBars_5: -1199540313
-      ui_topBars_2: -1021588513
+      ui_bars_4: -269193865
+      ui_bars_8: 1312051916
+      ui_bars_0: 2092925150
+      ui_bars_1: 442969237
+      ui_bars_2: -1314556928
+      ui_bars_10: 1479040117
+      ui_bars_7: -1545000970
+      ui_bars_6: -205891248
+      ui_bars_9: -1473010806
+      ui_bars_12: -739787086
+      ui_bars_3: 1374819672
+      ui_bars_5: 1115032537
+      ui_bars_11: -1938273099
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

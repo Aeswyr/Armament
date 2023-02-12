@@ -3,59 +3,94 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using FixMath.NET;
+using TMPro;
 
 public class ResourceDisplayController : MonoBehaviour
 {
+    [Header("Health")]
     [SerializeField] private Image healthBar;
     [SerializeField] private Image damageBar;
     [SerializeField] private Image shieldBar;
 
+    [Header("Meter")]
+    [SerializeField] private TextMeshProUGUI meterStocks;
+    [SerializeField] private Image meterBar;
+
+    [Header("Exhaust")]
+    [SerializeField] private Image exhaustBar;
+    [SerializeField] private Image rechargeBar;
+    [SerializeField] private Color highExhaust;
+    [SerializeField] private Color lowExhaust;
+
     int maxHealth;
     int health;
     int damageValue;
-    int shield;
-
+    int maxMeter;
+    int maxExhaust;
     float damageTime;
     [SerializeField] private float damageDelay;
     
     // call to setup the health bar before use
-    public void Setup(int maxHealth) {
+    public void Setup(int maxHealth, int maxMeter, int maxExhaust) {
+
+        this.maxMeter = maxMeter;
+        
+        this.maxExhaust = maxExhaust;
+
         this.maxHealth = maxHealth;
-        health = maxHealth;
         damageValue = maxHealth;
-        shield = maxHealth;
-        UpdateVisuals();
+
+        UpdateDamage();
     }
 
     // used when taking unblocked damage
-    public void Damage(int amount) {
+    public void SetHealth(int val) {
         damageTime = Time.time;
-        health -= amount;
-        shield = health;
-        UpdateVisuals();
+        health = val;
+        float hVal = (float)val / maxHealth;
+        healthBar.fillAmount = hVal;
+        healthBar.color = Color.HSVToRGB((hVal * 115 + 10) / 360, 1, 1);
+
+        
     }
 
     // used when dealing chip damage
-    public void ChipDamage(int amount) {
-        if (health > 1) {
-            health -= amount;
-            if (health < 1)
-                health = 1;
+    public void SetWhiteHealth(int val) {
+        shieldBar.fillAmount = (float)val / maxHealth;
+
+        if (val > health) {
             damageValue = health;
-        } else {
-            shield -= amount;
+            UpdateDamage();
         }
-        UpdateVisuals();
+        
     }
 
-    // used whenever health must be restored
-    public void Heal(int amount) {
-        health += amount;
-        if (damageValue < health)
-            damageValue = health;
-        if (shield < health)
-            shield = health;
-        UpdateVisuals();
+    public void SetMeter(int val) {
+        meterBar.fillAmount = (float)val / maxMeter;
+    }
+
+    public void SetMeterStocks(int amt) {
+        meterStocks.text = amt.ToString();
+    }
+
+    public void  SetExhaust(int val, bool exhausted) {
+        if (exhausted) {
+            exhaustBar.gameObject.SetActive(false);
+            rechargeBar.gameObject.SetActive(true);
+
+            rechargeBar.fillAmount = (float)val / maxExhaust;
+            return;
+        }
+
+        exhaustBar.gameObject.SetActive(true);
+        rechargeBar.gameObject.SetActive(false);
+
+        if (val > maxExhaust / 2)
+            exhaustBar.color = highExhaust;
+        else 
+            exhaustBar.color = lowExhaust;
+
+        exhaustBar.fillAmount = (float)val / maxExhaust;
     }
 
     void FixedUpdate() {
@@ -63,15 +98,6 @@ public class ResourceDisplayController : MonoBehaviour
             damageValue--;
             UpdateDamage();
         }
-    }
-
-    private void UpdateVisuals() {
-        float hVal = (float)health / maxHealth;
-        healthBar.fillAmount = hVal;
-        healthBar.color = Color.HSVToRGB((hVal * 100 + 25) / 360, 1, 1);
-        float sVal = (float)shield / maxHealth;
-        shieldBar.fillAmount = sVal;
-        UpdateDamage();
     }
 
     private void UpdateDamage() {

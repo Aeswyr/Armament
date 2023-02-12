@@ -190,6 +190,9 @@ MonoBehaviour:
   maxHealth: 250
   regenDelay: 120
   regenPerTicks: 10
+  maxMeter: 100
+  maxExhaust: 120
+  exhaustPerTicks: 7
 --- !u!114 &7598314718330134154
 MonoBehaviour:
   m_ObjectHideFlags: 0
