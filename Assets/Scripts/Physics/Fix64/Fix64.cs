@@ -1169,8 +1169,8 @@ namespace FixMath.NET
                 Rect nameRect = new Rect(position.x, position.y, 12, position.height);
                 Rect dataRect = new Rect(position.x + 12, position.y, 55, position.height);  
                 if (position.width != -1) {
-                    nameRect = new Rect(position.x, position.y, 50, position.height);
-                    dataRect = new Rect(position.x + 50, position.y, 150, position.height);
+                    nameRect = new Rect(position.x, position.y, 150, position.height);
+                    dataRect = new Rect(position.x + position.width - 202, position.y, 202, position.height);
                 }
 
                 EditorGUI.LabelField(nameRect, property.name);
