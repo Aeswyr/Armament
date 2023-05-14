@@ -80,7 +80,9 @@ public abstract class FixedCollider : MonoBehaviour
             if (this is FixedBoxCollider && !((FixedBoxCollider)this).isTrigger
                 && other is FixedBoxCollider && !((FixedBoxCollider)other).isTrigger) {
                 onPhysicsResolution?.Invoke(info);
+                
                 other.onCollisionEnter?.Invoke(new CollisionInfo(other, this));
+                other.thisFrame.Add(this);
                 return;
             }
             

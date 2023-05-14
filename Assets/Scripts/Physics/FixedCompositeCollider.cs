@@ -16,6 +16,9 @@ public class FixedCompositeCollider : FixedCollider
         if (other.transform.root == transform.root) // prevent collisions between related objects
             return false;
 
+        if (Physics2D.GetIgnoreLayerCollision(gameObject.layer, other.gameObject.layer))
+            return false;
+
         if (other is FixedBoxCollider) {
             if (CompositeAABB((FixedBoxCollider)other))
                 return true;

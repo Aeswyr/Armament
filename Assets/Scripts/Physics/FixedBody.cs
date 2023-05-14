@@ -67,16 +67,29 @@ public class FixedBody : MonoBehaviour
         
 
         if (bounds != null) {
+
+            Vec2Fix size = Vec2Fix.zero;
             Vec2Fix bound = fTransform.position;
-            if (fTransform.position.x > bounds.right) {
-                bound.x = bounds.right;
-            } else if (fTransform.position.x < bounds.left) {
-                bound.x = bounds.left;
+            Vec2Fix offset = Vec2Fix.zero;
+
+            foreach (var collider in GetComponentsInChildren<FixedBoxCollider>(true))
+                if (!collider.isTrigger) {
+                    size = (Fix64)0.5f * collider.Size;
+                    offset = collider.fixedTransform.localPosition;
+                    break;
+                }
+
+
+            
+            if (fTransform.position.x + offset.x + size.x > bounds.right) {
+                bound.x = bounds.right - size.x;
+            } else if (fTransform.position.x + offset.x - size.x < bounds.left) {
+                bound.x = bounds.left + size.x;
             }
 
-            if (fTransform.position.y > bounds.up) {
+            if (fTransform.position.y + offset.y + size.y > bounds.up) {
                 bound.y = bounds.up;
-            } else if (fTransform.position.y < bounds.down) {
+            } else if (fTransform.position.y + offset.y - size.y < bounds.down) {
                 bound.y = bounds.down;
             }
             fTransform.position = bound;

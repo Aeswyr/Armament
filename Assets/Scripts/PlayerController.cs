@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private FixedTransform fTransform;
     [SerializeField] private FixedBody fBody;
     [SerializeField] private FixedCollider fCollider;
+    [SerializeField] private FixedCollider hurtBox;
 
     [Header("UI")]
     [SerializeField] private ResourceDisplayController resourceDisplay;
@@ -168,6 +169,8 @@ public class PlayerController : MonoBehaviour
 
     void OnCollide(CollisionInfo info) {
         
+        Debug.Log("colliding!");
+
         if (input.GetButtonState(InputParser.Button.L1, InputParser.ButtonState.PRESSED)) {
             regenTimer = regenDelay;
             regenTick = 0;
@@ -206,6 +209,7 @@ public class PlayerController : MonoBehaviour
         if (input.GetButtonState(InputParser.Button.H1, InputParser.ButtonState.PRESSED)) {
             health -= 40;
             whiteHealth = 0;
+            
         }
     }
 }

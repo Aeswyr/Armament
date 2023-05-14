@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BodyMat
+  m_Name: SimpleToon
   m_Shader: {fileID: 4800000, guid: be891319084e9d147b09d89e80ce60e0, type: 3}
   m_ValidKeywords:
   - _EMISSIVE_SIMPLE
@@ -42,11 +42,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _1st_ShadeMap:
-        m_Texture: {fileID: 2800000, guid: 37bb9e2e0d522f6439f2b55583603005, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _2nd_ShadeMap:
-        m_Texture: {fileID: 2800000, guid: 37bb9e2e0d522f6439f2b55583603005, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ALDecalColorMask:
@@ -334,7 +334,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _HighColor_Tex:
-        m_Texture: {fileID: 2800000, guid: 37bb9e2e0d522f6439f2b55583603005, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _IridescenceMask:
@@ -374,7 +374,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 37bb9e2e0d522f6439f2b55583603005, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskMap:
@@ -693,7 +693,7 @@ Material:
     - _1st2nd_Shades_Feather: 0.0001
     - _1stShadeMapMask_Inverse: 0
     - _1st_ShadeColor_Feather: 0.0001
-    - _1st_ShadeColor_Step: 0.162
+    - _1st_ShadeColor_Step: 0.5
     - _1st_ShadeMapUV: 0
     - _2ndShadeMapMask_Inverse: 0
     - _2nd_ShadeColor_Feather: 0.0001
@@ -934,7 +934,7 @@ Material:
     - _BacklightViewStrength: 1
     - _BaseColorOverridden: 0
     - _BaseColorVisible: 1
-    - _BaseColor_Step: 0.162
+    - _BaseColor_Step: 0.5
     - _BaseShade_Feather: 0.0001
     - _Base_Speed: 0
     - _BlackLightMasking0GlobalMaskBlendType: 0
@@ -2199,7 +2199,7 @@ Material:
     - _OutlineVertexColorMaskStrength: 1
     - _OutlineVisible: 1
     - _OutlineZTest: 4
-    - _Outline_Width: 12
+    - _Outline_Width: 16
     - _OutlinesMaxDistance: 9999
     - _PBRNormalSelect: 1
     - _PBRSplitMaskSample: 0
@@ -2616,7 +2616,7 @@ Material:
     - _Tweak_Rim2LightMaskLevel: 0
     - _Tweak_RimLightMaskLevel: 0
     - _Tweak_ShadingGradeMapLevel: 0
-    - _Tweak_SystemShadowsLevel: -0.5
+    - _Tweak_SystemShadowsLevel: 0
     - _Tweak_transparency: 0
     - _UDIMDiscardHelpbox: 0
     - _UDIMDiscardMode: 0
@@ -3067,7 +3067,7 @@ Material:
     m_Colors:
     - _1st_ShadeColor: {r: 0.8018868, g: 0.8018868, b: 0.8018868, a: 1}
     - _1st_ShadeMapPan: {r: 0, g: 0, b: 0, a: 0}
-    - _2nd_ShadeColor: {r: 0.33962262, g: 0.33962262, b: 0.33962262, a: 1}
+    - _2nd_ShadeColor: {r: 0.34117648, g: 0.34117648, b: 0.34117648, a: 1}
     - _2nd_ShadeMapPan: {r: 0, g: 0, b: 0, a: 0}
     - _ALDecalColorMaskPan: {r: 0, g: 0, b: 0, a: 0}
     - _ALDecalVolumeColorHigh: {r: 1, g: 0, b: 0, a: 1}
