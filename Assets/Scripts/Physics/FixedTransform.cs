@@ -65,7 +65,7 @@ public class FixedTransform : MonoBehaviour
     }
 
     public void UpdateTransform() {
-        transform.position = new Vector3((float)position.x, (float)position.y, transform.position.z);
+        transform.localPosition = new Vector3((float)localPosition.x, (float)localPosition.y, transform.position.z);
     }
 
 

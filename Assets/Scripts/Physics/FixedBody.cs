@@ -74,7 +74,7 @@ public class FixedBody : MonoBehaviour
 
             foreach (var collider in GetComponentsInChildren<FixedBoxCollider>(true))
                 if (!collider.isTrigger) {
-                    size = (Fix64)0.5f * collider.Size;
+                    size = Fix64.Half * collider.Size;
                     offset = collider.fixedTransform.localPosition;
                     break;
                 }

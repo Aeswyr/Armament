@@ -56,7 +56,7 @@ public class FixedBoxCollider : FixedCollider
         if (isTrigger)
             Gizmos.color = Color.red;
 
-        Vec2Fix pos = GetComponent<FixedTransform>().position - Fix64.Half * size;
+        Vec2Fix pos = (Vec2Fix)(Vector2)transform.position - Fix64.Half * size;
 
         Gizmos.DrawLine(new Vector3((float)pos.x, (float)pos.y, 0),
          new Vector3((float)(pos.x + size.x), (float)pos.y, 0));

@@ -97,7 +97,7 @@ public class FixedCompositeCollider : FixedCollider
         FixedTransform fTransform  = GetComponent<FixedTransform>();
 
         Vec2Fix bsize = boundingSize;
-        Vec2Fix bpos = fTransform.position + boundingOffset;
+        Vec2Fix bpos = (Vec2Fix)(Vector2)transform.position + boundingOffset;
 
         Gizmos.DrawLine(new Vector3((float)bpos.x, (float)bpos.y, 0),
         new Vector3((float)(bpos.x + bsize.x), (float)bpos.y, 0));
@@ -112,7 +112,7 @@ public class FixedCompositeCollider : FixedCollider
 
         foreach (var box in boxes) {
             Vec2Fix size = box.size;
-            Vec2Fix pos = fTransform.position + box.position - Fix64.Half * size;
+            Vec2Fix pos = (Vec2Fix)(Vector2)transform.position + box.position - Fix64.Half * size;
 
             Gizmos.DrawLine(new Vector3((float)pos.x, (float)pos.y, 0),
             new Vector3((float)(pos.x + size.x), (float)pos.y, 0));
