@@ -22,6 +22,7 @@ public class InputParser : MonoBehaviour
     void FixedUpdate() {
         if (input == null)
             return;
+            
         directionBuffer[directionPointer] = new Vector2Int(Mathf.RoundToInt(input.dir.x), Mathf.RoundToInt(input.dir.y));
         List<Input> frameInputs = new List<Input>();
 
@@ -42,9 +43,9 @@ public class InputParser : MonoBehaviour
     }
 
     private void ReadButton(InputHandler.ButtonState input, Button b, ref List<Input> frameInputs) {
-        if (input.pressed)
+        if (input.pressed) {
             frameInputs.Add(new Input() {button = b, state = ButtonState.PRESSED});
-        else if (input.released)
+        } else if (input.released)
             frameInputs.Add(new Input() {button = b, state = ButtonState.RELEASED});
         else if (input.down)
             frameInputs.Add(new Input() {button = b, state = ButtonState.DOWN});

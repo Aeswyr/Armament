@@ -191,6 +191,8 @@ MonoBehaviour:
   fBody: {fileID: 1497046791989911500}
   fCollider: {fileID: 8317143237852987168}
   hurtBox: {fileID: 2019712340192455076}
+  hitboxPrefab: {fileID: 8247849377166544231, guid: 06c18c821b8c4d3488e6e55c3f964628,
+    type: 3}
   resourceDisplay: {fileID: 0}
   forwardSpeed:
     m_rawValue: 17179869184

@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private FixedBody fBody;
     [SerializeField] private FixedCollider fCollider;
     [SerializeField] private FixedCollider hurtBox;
+    [SerializeField] private GameObject hitboxPrefab;
 
     [Header("UI")]
     [SerializeField] private ResourceDisplayController resourceDisplay;
@@ -83,6 +84,9 @@ public class PlayerController : MonoBehaviour
     private int facing = 1;
     private int dashFacing = 0;
 
+    int actionFrames = 0;
+    GameObject activeHitbox;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -92,7 +96,7 @@ public class PlayerController : MonoBehaviour
         exhaust = maxExhaust;
         meter = 0;
 
-        fCollider.onCollisionEnter += OnCollide;
+        hurtBox.onCollisionEnter += OnCollide;
 
         
     }
@@ -100,6 +104,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (actionFrames > 0) {
+            actionFrames--;
+            return;
+        } else if (activeHitbox != null) {
+            Destroy(activeHitbox);
+            activeHitbox = null;
+        }
+
         facing = Fix64.Sign(GameManager.Instance.GetOtherPlayer(this).fTransform.position.x - fTransform.position.x);
         if (facing == 0)
             facing = 1;
@@ -164,14 +176,17 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (input.GetButtonState(InputParser.Button.H1, InputParser.ButtonState.PRESSED)) {
+            activeHitbox = Instantiate(hitboxPrefab, transform);
+            actionFrames = 30;
+        }
+
         fBody.velocity = movement;
     }
 
     void OnCollide(CollisionInfo info) {
-        
-        Debug.Log("colliding!");
 
-        if (input.GetButtonState(InputParser.Button.L1, InputParser.ButtonState.PRESSED)) {
+        if (input.Backward(facing)) {
             regenTimer = regenDelay;
             regenTick = 0;
             int amt = 10;
@@ -204,9 +219,7 @@ public class PlayerController : MonoBehaviour
                 whiteHealth = 0;
             }
             
-        }
-            
-        if (input.GetButtonState(InputParser.Button.H1, InputParser.ButtonState.PRESSED)) {
+        } else {
             health -= 40;
             whiteHealth = 0;
             

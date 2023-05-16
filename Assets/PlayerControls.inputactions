@@ -191,6 +191,17 @@
                 },
                 {
                     "name": "",
+                    "id": "7a3046db-5330-4ba5-8900-4fd0c769e53f",
+                    "path": "<XInputController>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Light1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "9192f1c2-2908-42b4-b0d2-c2e6fd7acfa0",
                     "path": "<Keyboard>/i",
                     "interactions": "",
@@ -204,6 +215,17 @@
                     "name": "",
                     "id": "419dfaff-3a3c-4bf1-a1ab-dca2b7857f2a",
                     "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Heavy1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4641cb17-9714-4b8c-b053-3fbb5d6cdde5",
+                    "path": "<XInputController>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -235,6 +257,17 @@
                 },
                 {
                     "name": "",
+                    "id": "f9fc38a9-1134-406b-972f-b986a7ee2635",
+                    "path": "<XInputController>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Light2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "b8383da0-4d91-430a-9c33-197eddb05415",
                     "path": "<Keyboard>/k",
                     "interactions": "",
@@ -248,6 +281,17 @@
                     "name": "",
                     "id": "58253981-6e2b-4046-a859-2864c8fb2034",
                     "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Heavy2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "90b22677-ec8c-4d29-a1a7-0553e7b07f46",
+                    "path": "<XInputController>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
