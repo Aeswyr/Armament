@@ -37,7 +37,6 @@ public class InputHandler : MonoBehaviour
 
     public void Light1(InputAction.CallbackContext ctx) {
         this.buttons[1].Set(ctx);
-        Debug.Log("L1");
     }
 
     public void Heavy1(InputAction.CallbackContext ctx) {
