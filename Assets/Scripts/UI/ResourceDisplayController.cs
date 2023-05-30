@@ -47,22 +47,26 @@ public class ResourceDisplayController : MonoBehaviour
     public void SetHealth(int val) {
         damageTime = Time.time;
         health = val;
-        float hVal = (float)val / maxHealth;
-        healthBar.fillAmount = hVal;
-        healthBar.color = Color.HSVToRGB((hVal * 115 + 10) / 360, 1, 1);
+        healthBar.fillAmount = ScaleHealth(val, maxHealth);
+        healthBar.color = Color.HSVToRGB((((float)val / maxHealth) * 115 + 10) / 360, 1, 1);
 
         
     }
 
     // used when dealing chip damage
     public void SetWhiteHealth(int val) {
-        shieldBar.fillAmount = (float)val / maxHealth;
+        shieldBar.fillAmount = ScaleHealth(val, maxHealth);
 
         if (val > health) {
             damageValue = health;
             UpdateDamage();
         }
         
+    }
+
+    private float ScaleHealth(float val, float max) {
+        var x = val / max;
+        return (Mathf.Pow(x, 3f) + x) / 2f;
     }
 
     public void SetMeter(int val) {
@@ -101,7 +105,6 @@ public class ResourceDisplayController : MonoBehaviour
     }
 
     private void UpdateDamage() {
-        float val = (float)damageValue / maxHealth;
-        damageBar.fillAmount = val;
+        damageBar.fillAmount = ScaleHealth(damageValue, maxHealth);
     }
 }
