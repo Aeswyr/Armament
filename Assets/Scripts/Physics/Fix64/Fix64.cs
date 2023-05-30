@@ -49,6 +49,28 @@ namespace FixMath.NET
         const long FRACTIONAL_MASK = 0xFFFFFFF00000000;
         const int LUT_SIZE = (int)(PI_OVER_2 >> 15);
 
+/// <summary>
+        /// Returns a number indicating the sign of a Fix64 number.
+        /// Returns 1 if the value is positive, 0 if is 0, and -1 if it is negative.
+        /// </summary>
+        public static Fix64 Max(Fix64 value1, Fix64 value2)
+        {
+            if (value2 > value1)
+                return value2;
+            return value1;
+        }
+
+        /// <summary>
+        /// Returns a number indicating the sign of a Fix64 number.
+        /// Returns 1 if the value is positive, 0 if is 0, and -1 if it is negative.
+        /// </summary>
+        public static Fix64 Min(Fix64 value1, Fix64 value2)
+        {
+            if (value2 < value1)
+                return value2;
+            return value1;
+        }
+
         /// <summary>
         /// Returns a number indicating the sign of a Fix64 number.
         /// Returns 1 if the value is positive, 0 if is 0, and -1 if it is negative.

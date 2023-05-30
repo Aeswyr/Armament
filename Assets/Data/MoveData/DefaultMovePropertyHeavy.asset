@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b37e7145e1dde4c4f83291f1c2f89691, type: 3}
+  m_Name: DefaultMovePropertyHeavy
+  m_EditorClassIdentifier: 
+  moveName: default
+  damage: 20
+  exhaust: 10
+  duration: 0
+  proration:
+    m_rawValue: 4294967296
+  forcedProration:
+    m_rawValue: 4294967296
+  blockProperty: 0
+  moveLevel: 0
+  cancelLevel: 1
+  cancelWindow: 10
+  blockType: 0

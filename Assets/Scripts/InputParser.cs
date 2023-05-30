@@ -157,6 +157,10 @@ public class InputParser : MonoBehaviour
         return directionBuffer[directionPointer].x;
     }
 
+    public Motion GetMotion() {
+        return Motion.NONE;
+    }
+
 
     public enum Button {
         L1, L2, H1, H2, R, D
@@ -169,5 +173,9 @@ public class InputParser : MonoBehaviour
     private struct Input {
         public Button button;
         public ButtonState state;
+    }
+
+    public enum Motion {
+        NONE, D236, D214, D236236, D214214, D6, D8, D1, D4, D2, D5
     }
 }

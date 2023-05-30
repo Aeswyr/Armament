@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 1497046791989911500}
   - component: {fileID: 484773666188384167}
   - component: {fileID: 3286033944396800248}
+  - component: {fileID: 4348463835694102379}
   - component: {fileID: 7598314718330134154}
   m_Layer: 0
   m_Name: Player
@@ -191,8 +192,7 @@ MonoBehaviour:
   fBody: {fileID: 1497046791989911500}
   fCollider: {fileID: 8317143237852987168}
   hurtBox: {fileID: 2019712340192455076}
-  hitboxPrefab: {fileID: 8247849377166544231, guid: 06c18c821b8c4d3488e6e55c3f964628,
-    type: 3}
+  playerActions: {fileID: 4348463835694102379}
   resourceDisplay: {fileID: 0}
   forwardSpeed:
     m_rawValue: 17179869184
@@ -210,6 +210,22 @@ MonoBehaviour:
   maxMeter: 100
   maxExhaust: 120
   exhaustPerTicks: 7
+--- !u!114 &4348463835694102379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4482595134042571286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6da08cb691655a4e97b7e2ca25c6d76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitboxPrefab: {fileID: 8247849377166544231, guid: 06c18c821b8c4d3488e6e55c3f964628,
+    type: 3}
+  property1: {fileID: 11400000, guid: 28ab2fbd6c77c534693c83700b49abb3, type: 2}
+  property2: {fileID: 11400000, guid: cf9b0baa11350a542a344635e6a39903, type: 2}
 --- !u!114 &7598314718330134154
 MonoBehaviour:
   m_ObjectHideFlags: 0

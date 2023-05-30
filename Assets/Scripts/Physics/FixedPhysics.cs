@@ -12,7 +12,6 @@ public static class FixedPhysics {
     private static List<FixedCollider> dirty = new();
     private static List<FixedCollider> colliders = new();
     private static List<FixedBoxCollider> physicsColliders = new();
-
     private static List<FixedBody> physicsBodies = new();
 
     // updates the physics system, performing rigidbody movement and testing for collisions
@@ -57,6 +56,9 @@ public static class FixedPhysics {
         if (collider is FixedBoxCollider && physicsColliders.Contains((FixedBoxCollider)collider)) {
             physicsColliders.Remove((FixedBoxCollider)collider);
         }
+
+        foreach (var col in colliders)
+            col.CleanCollider(collider);
     }
 
     public static void RegisterBody(FixedBody fBody) {

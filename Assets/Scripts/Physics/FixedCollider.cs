@@ -124,6 +124,11 @@ public abstract class FixedCollider : MonoBehaviour
     public void Undirty() {
         dirty = false;
     }
+
+    public void CleanCollider(FixedCollider collider) {
+        collisions.Remove(collider);
+        thisFrame.Remove(collider);
+    }
 }
 
 public struct CollisionInfo {

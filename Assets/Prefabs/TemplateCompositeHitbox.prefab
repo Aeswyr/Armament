@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7820272772949918612}
   - component: {fileID: -5236255434094147962}
   - component: {fileID: 6771440076124058500}
+  - component: {fileID: 4901013566346725323}
   m_Layer: 7
   m_Name: TemplateCompositeHitbox
   m_TagString: Untagged
@@ -84,3 +85,15 @@ MonoBehaviour:
       y:
         m_rawValue: 6442450944
   mat: {fileID: 0}
+--- !u!114 &4901013566346725323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8247849377166544231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4434faba908dcef4b9594329575432e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private FixedBody fBody;
     [SerializeField] private FixedCollider fCollider;
     [SerializeField] private FixedCollider hurtBox;
-    [SerializeField] private GameObject hitboxPrefab;
+    [SerializeField] private ActionController playerActions;
 
     [Header("UI")]
     [SerializeField] private ResourceDisplayController resourceDisplay;
@@ -84,9 +84,6 @@ public class PlayerController : MonoBehaviour
     private int facing = 1;
     private int dashFacing = 0;
 
-    int actionFrames = 0;
-    GameObject activeHitbox;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -96,7 +93,7 @@ public class PlayerController : MonoBehaviour
         exhaust = maxExhaust;
         meter = 0;
 
-        hurtBox.onCollisionEnter += OnCollide;
+        hurtBox.onCollisionEnter += OnHit;
 
         
     }
@@ -104,13 +101,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (actionFrames > 0) {
-            actionFrames--;
-            return;
-        } else if (activeHitbox != null) {
-            Destroy(activeHitbox);
-            activeHitbox = null;
-        }
 
         facing = Fix64.Sign(GameManager.Instance.GetOtherPlayer(this).fTransform.position.x - fTransform.position.x);
         if (facing == 0)
@@ -120,7 +110,7 @@ public class PlayerController : MonoBehaviour
         bool grounded = fTransform.position.y == Fix64.Zero;
         
         
-        if (grounded) {
+        if (playerActions.Actionable() && grounded) {
             if (input.Forward(facing)) {
                 movement.x = forwardSpeed * (Fix64)facing;
             } else if (input.Backward(facing)) 
@@ -148,6 +138,8 @@ public class PlayerController : MonoBehaviour
             } else if (input.Jump()) {
                 movement.y = jumpHeight;
                 movement.x = jumpSpeed * (Fix64)input.Direction();
+                if (input.Dash())
+                    movement.x += jumpSpeed * Fix64.Half * (Fix64)dashFacing;
                 dashFacing = 0;
             }
         }
@@ -177,22 +169,31 @@ public class PlayerController : MonoBehaviour
         }
 
         if (input.GetButtonState(InputParser.Button.H1, InputParser.ButtonState.PRESSED)) {
-            activeHitbox = Instantiate(hitboxPrefab, transform);
-            actionFrames = 30;
+            playerActions.FireMove(InputParser.Button.H1, input.GetMotion());
+        }
+        if (input.GetButtonState(InputParser.Button.L1, InputParser.ButtonState.PRESSED)) {
+            playerActions.FireMove(InputParser.Button.L1, input.GetMotion());
         }
 
         fBody.velocity = movement;
     }
 
-    void OnCollide(CollisionInfo info) {
+    void OnHit(CollisionInfo info) {
 
-        if (input.Backward(facing)) {
+        var hitInfo = info.secondary.gameObject.GetComponent<HitboxInfo>();
+        int damage = hitInfo.Properties.Damage;
+        int exhaustDamage = hitInfo.Properties.Exhaust;
+
+        //trigger cancel window for attacker
+        hitInfo.Owner.SetCancellable(hitInfo.Properties);
+
+        
+        if (input.Backward(facing)) { //handle blocking situation
             regenTimer = regenDelay;
             regenTick = 0;
-            int amt = 10;
 
-            if (!exhausted) {
-                exhaust -= amt / 2;
+            if (!exhausted) { // exhaust damage
+                exhaust -= exhaustDamage;
                 if (exhaust < 0) {
                     exhaust = 0;
                     exhausted = true;
@@ -202,25 +203,26 @@ public class PlayerController : MonoBehaviour
             }
             
 
-            if (health > 1) {
-                int realAmt = amt;
-                if (health > amt + 1) {
-                    health -= amt;
-                    whiteHealth += amt;
+            if (health > 1) { // convert chip to white health
+                damage = (int)Fix64.Max(Fix64.One, (Fix64)damage * (Fix64)0.25f);
+                int realAmt = damage;
+                if (health > damage + 1) {
+                    health -= damage;
+                    whiteHealth += damage;
                 } else {
                     realAmt = health - 1;
                     whiteHealth += realAmt;
                     health = 1;
                 }
             } else if (whiteHealth > 0) {
-                whiteHealth -= amt * 2;
+                whiteHealth -= damage * 2;
             } else {
                 health = 0;
                 whiteHealth = 0;
             }
             
-        } else {
-            health -= 40;
+        } else { //handle unblocked situation
+            health -= damage;
             whiteHealth = 0;
             
         }
