@@ -208,8 +208,8 @@ MonoBehaviour:
   regenDelay: 120
   regenPerTicks: 10
   maxMeter: 100
-  maxExhaust: 120
-  exhaustPerTicks: 7
+  maxMomentum: 120
+  momentumPerTicks: 7
 --- !u!114 &4348463835694102379
 MonoBehaviour:
   m_ObjectHideFlags: 0

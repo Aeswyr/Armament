@@ -40,10 +40,10 @@ public class ActionController : MonoBehaviour
         return actionFrames <= 0;
     }
 
-    public void FireMove(InputParser.Button button, InputParser.Motion motion) {
+    public void FireMove(InputParser.Action button, InputParser.Motion motion, bool airborne) {
 
         MoveProperty moveProperties = property1;
-        if (button == InputParser.Button.H1)
+        if (button == InputParser.Action.H1)
             moveProperties = property2;
 
         if ((actionFrames > 0 || activeHitbox != null)
@@ -58,9 +58,9 @@ public class ActionController : MonoBehaviour
 
         activeHitbox = Instantiate(hitboxPrefab, transform);
         
-        // setup for kara cancels
-        cancelFrames = 2;
-        cancelType = moveProperties.MoveLevel;
+        // setup for kara cancels : REMOVED KARA CANCELS (They're needlessly complex, and since Kara dash cancel and kara impact exist, they arent needed)
+        //cancelFrames = 2;
+        //cancelType = moveProperties.MoveLevel;
 
         actionFrames = moveProperties.Duration;
         activeHitbox.GetComponent<HitboxInfo>().Init(moveProperties, this);

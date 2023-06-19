@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     private int whiteHealth {
         get {return m_whiteHealth;}
         set {
-            if (!exhausted) {
+            if (momentumState != -1) {
                 resourceDisplay.SetWhiteHealth(value + health);
                 m_whiteHealth = value;
                 return;
@@ -66,18 +66,18 @@ public class PlayerController : MonoBehaviour
     }
     private int meterStocks;
 
-    [SerializeField] private int maxExhaust;
-    private int m_exhaust;
-    private int exhaust {
-        get {return m_exhaust;}
+    [SerializeField] private int maxMomentum;
+    private int m_momentum;
+    private int momentum {
+        get {return m_momentum;}
         set {
-            resourceDisplay.SetExhaust(value, exhausted);
-            m_exhaust = value;
+            resourceDisplay.SetExhaust(value, momentumState == -1);
+            m_momentum = value;
         }
     }
-    private bool exhausted;
-    [SerializeField] private int exhaustPerTicks;
-    private int exhaustTick;
+    private int momentumState = 0; // -1 lost the initiative, +1 gained the initiative, 0 momentum neutral 
+    [SerializeField] private int momentumPerTicks;
+    private int momentumTick;
     
 
 // 1 is facing right, -1 facing left
@@ -87,10 +87,10 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        resourceDisplay.Setup(maxHealth, maxMeter, maxExhaust);
+        resourceDisplay.Setup(maxHealth, maxMeter, maxMomentum);
 
         health = maxHealth;
-        exhaust = maxExhaust;
+        momentum = maxMomentum / 2;
         meter = 0;
 
         hurtBox.onCollisionEnter += OnHit;
@@ -156,52 +156,51 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (exhausted) {
-            if (exhaustTick == 0) {
-                exhaustTick = exhaustPerTicks;
-                exhaust++;
-                if (exhaust == maxExhaust) {
-                    exhausted = false;
+        if (momentumState == -1) {
+            if (momentumTick == 0) {
+                momentumTick = momentumPerTicks;
+                momentum++;
+                if (momentum == maxMomentum) {
+                    GameManager.Instance.ResetMomentum(this);
                 }
             } else {
-                exhaustTick--;
+                momentumTick--;
             }
         }
 
         if (input.GetButtonState(InputParser.Button.H1, InputParser.ButtonState.PRESSED)) {
-            playerActions.FireMove(InputParser.Button.H1, input.GetMotion());
+            playerActions.FireMove(InputParser.Action.H1, input.GetMotion(), !grounded);
         }
         if (input.GetButtonState(InputParser.Button.L1, InputParser.ButtonState.PRESSED)) {
-            playerActions.FireMove(InputParser.Button.L1, input.GetMotion());
+            playerActions.FireMove(InputParser.Action.L1, input.GetMotion(), !grounded);
+        }
+        if (input.GetButtonState(InputParser.Button.H2, InputParser.ButtonState.PRESSED)) {
+            playerActions.FireMove(InputParser.Action.H2, input.GetMotion(), !grounded);
+        }
+        if (input.GetButtonState(InputParser.Button.L2, InputParser.ButtonState.PRESSED)) {
+            playerActions.FireMove(InputParser.Action.L2, input.GetMotion(), !grounded);
+        }
+        if (input.GetButtonState(InputParser.Button.R, InputParser.ButtonState.PRESSED)) {
+            playerActions.FireMove(InputParser.Action.R, input.GetMotion(), !grounded);
         }
 
         fBody.velocity = movement;
     }
-
     void OnHit(CollisionInfo info) {
 
         var hitInfo = info.secondary.gameObject.GetComponent<HitboxInfo>();
         int damage = hitInfo.Properties.Damage;
-        int exhaustDamage = hitInfo.Properties.Exhaust;
+        int momentumDamage = hitInfo.Properties.Exhaust;
 
         //trigger cancel window for attacker
         hitInfo.Owner.SetCancellable(hitInfo.Properties);
 
         
-        if (input.Backward(facing)) { //handle blocking situation
+        if (input.Backward(facing) || true) { //handle blocking situation
             regenTimer = regenDelay;
             regenTick = 0;
 
-            if (!exhausted) { // exhaust damage
-                exhaust -= exhaustDamage;
-                if (exhaust < 0) {
-                    exhaust = 0;
-                    exhausted = true;
-                    exhaustTick = exhaustPerTicks;
-                    whiteHealth = 0;
-                }
-            }
-            
+            GameManager.Instance.ChangeMomentumBar(-momentumDamage, this);
 
             if (health > 1) { // convert chip to white health
                 damage = (int)Fix64.Max(Fix64.One, (Fix64)damage * (Fix64)0.25f);
@@ -226,5 +225,29 @@ public class PlayerController : MonoBehaviour
             whiteHealth = 0;
             
         }
+    }
+
+    public void AdjustMomentumBar(int amt) {
+        if (momentumState == 1
+            || (momentumState == -1 && amt < 0))
+            amt = 0;
+        
+        momentum += amt;
+        if (momentumState == 0 ) {
+            if (momentum < 0) {
+                momentum = 0;
+                momentumState = -1;
+                momentumTick = momentumPerTicks;
+                whiteHealth = 0;
+            } else if (momentum >= maxMomentum) {
+                momentum = maxMomentum;
+                momentumState = 1;
+            }
+        }
+    }
+
+    public void ResetMomentum() {
+        momentum = maxMomentum / 2;
+        momentumState = 0;
     }
 }

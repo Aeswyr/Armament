@@ -113,7 +113,7 @@ public abstract class FixedCollider : MonoBehaviour
 
     // marks this collider as dirty in the physics system, meaning it is checked for new collisions
     // this is done automatically whenever the transform this object is linked to is edited
-    private void MarkDirty() {
+    protected void MarkDirty() {
         if (!dirty) {
             FixedPhysics.MarkDirty(this);
             dirty = true;

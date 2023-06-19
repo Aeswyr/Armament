@@ -86,5 +86,5 @@ public enum BlockPropertyType {
 }
 
 public enum CancelType {
-    NONE, LIGHT, HEAVY, COMMAND, IMPACT, SPECIAL, SUPER, UNCANCELABLE
+    NONE, LIGHT, HEAVY, COMMAND, SPECIAL, SUPER, UNCANCELABLE
 }

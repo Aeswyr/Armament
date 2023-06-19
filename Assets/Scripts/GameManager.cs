@@ -21,4 +21,14 @@ public class GameManager : Singleton<GameManager>
         }
         return null;
     }
+
+    public void ChangeMomentumBar(int amt, PlayerController primary) { 
+        primary.AdjustMomentumBar(amt);
+        GetOtherPlayer(primary).AdjustMomentumBar(-amt);
+    }
+
+    public void ResetMomentum(PlayerController primary) {
+        primary.ResetMomentum();
+        GetOtherPlayer(primary).ResetMomentum();
+    }
 }

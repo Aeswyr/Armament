@@ -16,11 +16,13 @@ public static class FixedPhysics {
 
     // updates the physics system, performing rigidbody movement and testing for collisions
     public static void Update() {
-        foreach (var fBody in physicsBodies)
-            fBody.PhysicsFrame();
+        for (int i = 0; i < physicsBodies.Count; i++)
+            physicsBodies[i].PhysicsFrame();
         
-        foreach (var collider in dirty) {
-            foreach (var target in colliders) {
+        for (int i = 0; i < dirty.Count; i++) {
+            var collider = dirty[i];
+            for (int j = 0; j < colliders.Count; j++) {
+                var target = colliders[j];
                 if (collider != target && collider.Colliding(target)) {
                     collider.Collide(target);
                 }
@@ -28,8 +30,8 @@ public static class FixedPhysics {
             collider.Undirty();
         }
 
-        foreach (var collider in colliders) {
-            collider.CheckCollisions();
+        for (int i = 0; i < colliders.Count; i++) {
+            colliders[i].CheckCollisions();
         }
 
         dirty.Clear();

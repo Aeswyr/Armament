@@ -149,4 +149,9 @@ public class FixedCompositeCollider : FixedCollider
         boundingSize = new Vec2Fix(corners[1] - corners[0], corners[3] - corners[2]);
         boundingOffset = new Vec2Fix (corners[0], corners[2]);
     }
+
+    public void SetSize(List<FixedBox> newSize) {
+        this.boxes = newSize;
+        this.MarkDirty();
+    }
 }

@@ -158,7 +158,7 @@ public class InputParser : MonoBehaviour
     }
 
     public Motion GetMotion() {
-        return Motion.NONE;
+        return Motion.M5;
     }
 
 
@@ -176,6 +176,10 @@ public class InputParser : MonoBehaviour
     }
 
     public enum Motion {
-        NONE, D236, D214, D236236, D214214, D6, D8, D1, D4, D2, D5
+        M236, M214, M236236, M214214, M46, M28, M6, M2, M5
+    }
+
+    public enum Action {
+        L1, L2, H1, H2, R, LH, LL, HH, RLL, RHH
     }
 }

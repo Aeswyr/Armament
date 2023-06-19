@@ -68,4 +68,9 @@ public class FixedBoxCollider : FixedCollider
          new Vector3((float)pos.x, (float)pos.y, 0));
     }
 
+    public void SetSize(Vec2Fix newSize) {
+        this.size = newSize;
+        this.MarkDirty();
+    }
+
 }

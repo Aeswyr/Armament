@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: DefaultMovePropertyHeavy
   m_EditorClassIdentifier: 
   moveName: default
-  damage: 20
+  damage: 25
   exhaust: 10
-  duration: 0
+  duration: 40
   proration:
     m_rawValue: 4294967296
   forcedProration:
     m_rawValue: 4294967296
   blockProperty: 0
-  moveLevel: 0
-  cancelLevel: 1
+  moveLevel: 2
+  cancelLevel: 2
   cancelWindow: 10
   blockType: 0
