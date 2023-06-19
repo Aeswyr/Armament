@@ -196,7 +196,7 @@ public class PlayerController : MonoBehaviour
         hitInfo.Owner.SetCancellable(hitInfo.Properties);
 
         
-        if (input.Backward(facing) || true) { //handle blocking situation
+        if (input.Backward(facing)) { //handle blocking situation
             regenTimer = regenDelay;
             regenTick = 0;
 
