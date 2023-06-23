@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: DefaultMovePropertyHeavy
   m_EditorClassIdentifier: 
   moveName: default
+  action: 5
+  motion: 8
   damage: 25
-  exhaust: 10
+  momentumDamage: 10
   duration: 40
   proration:
     m_rawValue: 4294967296

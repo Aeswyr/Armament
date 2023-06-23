@@ -105,6 +105,8 @@ public class PlayerController : MonoBehaviour
         facing = Fix64.Sign(GameManager.Instance.GetOtherPlayer(this).fTransform.position.x - fTransform.position.x);
         if (facing == 0)
             facing = 1;
+            
+        input.CheckCharge(facing);
 
         Vec2Fix movement = fBody.velocity;
         bool grounded = fTransform.position.y == Fix64.Zero;
@@ -129,8 +131,9 @@ public class PlayerController : MonoBehaviour
                 movement.x = dashSpeed * (Fix64)dashFacing;
             }
 
-            if (!input.Dash() && !input.Forward(dashFacing))
+            if (!input.DashMacro() && !input.Forward(dashFacing)) {
                 dashFacing = 0;
+            }
             
             if (input.Crouch()) {
                 movement.x = Fix64.Zero;
@@ -138,7 +141,7 @@ public class PlayerController : MonoBehaviour
             } else if (input.Jump()) {
                 movement.y = jumpHeight;
                 movement.x = jumpSpeed * (Fix64)input.Direction();
-                if (input.Dash())
+                if (dashFacing != 0)
                     movement.x += jumpSpeed * Fix64.Half * (Fix64)dashFacing;
                 dashFacing = 0;
             }
@@ -169,19 +172,19 @@ public class PlayerController : MonoBehaviour
         }
 
         if (input.GetButtonState(InputParser.Button.H1, InputParser.ButtonState.PRESSED)) {
-            playerActions.FireMove(InputParser.Action.H1, input.GetMotion(), !grounded);
+            playerActions.FireMove(InputParser.Action.H1, input.GetMotions(facing), !grounded);
         }
         if (input.GetButtonState(InputParser.Button.L1, InputParser.ButtonState.PRESSED)) {
-            playerActions.FireMove(InputParser.Action.L1, input.GetMotion(), !grounded);
+            playerActions.FireMove(InputParser.Action.L1, input.GetMotions(facing), !grounded);
         }
         if (input.GetButtonState(InputParser.Button.H2, InputParser.ButtonState.PRESSED)) {
-            playerActions.FireMove(InputParser.Action.H2, input.GetMotion(), !grounded);
+            playerActions.FireMove(InputParser.Action.H2, input.GetMotions(facing), !grounded);
         }
         if (input.GetButtonState(InputParser.Button.L2, InputParser.ButtonState.PRESSED)) {
-            playerActions.FireMove(InputParser.Action.L2, input.GetMotion(), !grounded);
+            playerActions.FireMove(InputParser.Action.L2, input.GetMotions(facing), !grounded);
         }
         if (input.GetButtonState(InputParser.Button.R, InputParser.ButtonState.PRESSED)) {
-            playerActions.FireMove(InputParser.Action.R, input.GetMotion(), !grounded);
+            playerActions.FireMove(InputParser.Action.R, input.GetMotions(facing), !grounded);
         }
 
         fBody.velocity = movement;
@@ -190,34 +193,35 @@ public class PlayerController : MonoBehaviour
 
         var hitInfo = info.secondary.gameObject.GetComponent<HitboxInfo>();
         int damage = hitInfo.Properties.Damage;
-        int momentumDamage = hitInfo.Properties.Exhaust;
+        int momentumDamage = hitInfo.Properties.MomentumDamage;
 
         //trigger cancel window for attacker
         hitInfo.Owner.SetCancellable(hitInfo.Properties);
 
         
-        if (input.Backward(facing)) { //handle blocking situation
+        if (IsBlocking(hitInfo.Properties.BlockProperty)) { //handle blocking situation
             regenTimer = regenDelay;
             regenTick = 0;
 
             GameManager.Instance.ChangeMomentumBar(-momentumDamage, this);
-
-            if (health > 1) { // convert chip to white health
-                damage = (int)Fix64.Max(Fix64.One, (Fix64)damage * (Fix64)0.25f);
-                int realAmt = damage;
-                if (health > damage + 1) {
-                    health -= damage;
-                    whiteHealth += damage;
+            if (hitInfo.Properties.MoveLevel >= CancelType.SPECIAL || momentumState == -1) {
+                if (health > 1) { // convert chip to white health
+                    damage = (int)Fix64.Max(Fix64.One, (Fix64)damage * (Fix64)0.25f);
+                    int realAmt = damage;
+                    if (health > damage + 1) {
+                        health -= damage;
+                        whiteHealth += damage;
+                    } else {
+                        realAmt = health - 1;
+                        whiteHealth += realAmt;
+                        health = 1;
+                    }
+                } else if (whiteHealth > 0) {
+                    whiteHealth -= damage * 2;
                 } else {
-                    realAmt = health - 1;
-                    whiteHealth += realAmt;
-                    health = 1;
+                    health = 0;
+                    whiteHealth = 0;
                 }
-            } else if (whiteHealth > 0) {
-                whiteHealth -= damage * 2;
-            } else {
-                health = 0;
-                whiteHealth = 0;
             }
             
         } else { //handle unblocked situation
@@ -225,6 +229,22 @@ public class PlayerController : MonoBehaviour
             whiteHealth = 0;
             
         }
+    }
+
+    public bool IsBlocking(BlockPropertyType blockProperty) {
+        if (blockProperty == BlockPropertyType.THROW)
+            return false;
+        
+        if (!input.Backward(facing) || !playerActions.Actionable())
+            return false;
+
+        if (blockProperty == BlockPropertyType.LOW && !input.Crouch())
+            return false;
+
+        if (blockProperty == BlockPropertyType.HIGH && input.Crouch())
+            return false;
+
+        return true;
     }
 
     public void AdjustMomentumBar(int amt) {

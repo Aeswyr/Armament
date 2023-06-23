@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: DefaultMovePropertyLight
   m_EditorClassIdentifier: 
   moveName: default
+  action: 2
+  motion: 8
   damage: 15
-  exhaust: 5
+  momentumDamage: 5
   duration: 20
   proration:
     m_rawValue: 4294967296

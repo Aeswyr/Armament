@@ -224,8 +224,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitboxPrefab: {fileID: 8247849377166544231, guid: 06c18c821b8c4d3488e6e55c3f964628,
     type: 3}
-  property1: {fileID: 11400000, guid: 28ab2fbd6c77c534693c83700b49abb3, type: 2}
-  property2: {fileID: 11400000, guid: cf9b0baa11350a542a344635e6a39903, type: 2}
+  weapon1:
+  - {fileID: 11400000, guid: 28ab2fbd6c77c534693c83700b49abb3, type: 2}
+  - {fileID: 11400000, guid: cf9b0baa11350a542a344635e6a39903, type: 2}
+  weapon2: []
+  extra: []
+  universal: []
+  currentProperty: {fileID: 0}
 --- !u!114 &7598314718330134154
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,9 +244,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   input: {fileID: 0}
-  moveBufferSize: 10
+  moveBufferSize: 25
   inputBufferSize: 10
-  doubleTapRange: 10
+  doubleTapRange: 6
+  fullCharge: 40
+  chargeDecayThreshold: 10
 --- !u!1 &6583946296888160430
 GameObject:
   m_ObjectHideFlags: 0

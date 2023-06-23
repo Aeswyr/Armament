@@ -8,7 +8,10 @@ public class InputParser : MonoBehaviour
     [SerializeField] private int moveBufferSize;
     [SerializeField] private int inputBufferSize;
     [SerializeField] private int doubleTapRange;
+    [SerializeField] private int fullCharge;
+    [SerializeField] private int chargeDecayThreshold;
     Vector2Int[] directionBuffer;
+    int backCharge, downCharge, downDecay, backDecay;
     List<Input>[] inputBuffer;
 
     private int directionPointer = 0;
@@ -22,8 +25,15 @@ public class InputParser : MonoBehaviour
     void FixedUpdate() {
         if (input == null)
             return;
+
+        // update pointers for new frame
+        directionPointer = (directionPointer + 1) % moveBufferSize;
+        inputPointer = (inputPointer + 1) % inputBufferSize;
             
+        // add direction for this frame
         directionBuffer[directionPointer] = new Vector2Int(Mathf.RoundToInt(input.dir.x), Mathf.RoundToInt(input.dir.y));
+
+        // generate button inputs for this frame
         List<Input> frameInputs = new List<Input>();
 
         ReadButton(input.light1, Button.L1, ref frameInputs);
@@ -33,13 +43,11 @@ public class InputParser : MonoBehaviour
         ReadButton(input.meter, Button.R, ref frameInputs);
         ReadButton(input.dash, Button.D, ref frameInputs);
 
+        // insert inputs or null if no inputs occurred
         if (frameInputs.Count > 0)
             inputBuffer[inputPointer] = frameInputs;
         else 
             inputBuffer[inputPointer] = null;
-
-        directionPointer = (directionPointer + 1) % moveBufferSize;
-        inputPointer = (inputPointer + 1) % inputBufferSize;
     }
 
     private void ReadButton(InputHandler.ButtonState input, Button b, ref List<Input> frameInputs) {
@@ -60,7 +68,7 @@ public class InputParser : MonoBehaviour
         return directionBuffer[directionPointer].x == -facing;
     }
 
-    public bool Dash() {
+    public bool DashMacro() {
         if (inputBuffer[inputPointer] == null)
             return false;
         foreach (var input in inputBuffer[inputPointer]) {
@@ -94,41 +102,33 @@ public class InputParser : MonoBehaviour
         return input.heavy1.pressed;
     }
 
-    public bool Released(Button button) {
-
-        return false;
-    }
-
-    public bool Down(Button button) {
-
-        return false;
-    }
-
     public void BindInputHandler(InputHandler input) {
         this.input = input;
     }
 
     public bool DashStart(int facing) {
-        if (Dash() && !Backward(facing) && !Crouch())
+        if (DashMacro() && !Backward(facing) && !Crouch())
             return true;
 
         int frames = 0;
         bool searching = false;
         for (int i = 0; i < moveBufferSize; i++) {
-            int j = (directionPointer + i) % moveBufferSize;
+            int j = (directionPointer - i + moveBufferSize) % moveBufferSize;
 
             if (searching) {
                 if (frames != 0) {
-                    if (directionBuffer[j].x == facing)
+                    if (directionBuffer[j].x == facing) {
+                        Debug.Log("Double tap spotted");
                         return true;
+                    }
 
 
 
                     frames--;
                     if (frames == 0)
-                        searching = false;
+                        return false;
                 } else {
-                    if (directionBuffer[j].x != facing)
+                    if (directionBuffer[j].x == 0)
                         frames = doubleTapRange;
                 }
             } else {
@@ -157,8 +157,178 @@ public class InputParser : MonoBehaviour
         return directionBuffer[directionPointer].x;
     }
 
-    public Motion GetMotion() {
-        return Motion.M5;
+    public Vector2Int Vector() {
+        return directionBuffer[directionPointer];
+    }
+
+    public bool VectorChanged() {
+        return directionBuffer[directionPointer] != directionBuffer[(directionPointer - 1 + moveBufferSize) % moveBufferSize];
+    }
+
+    public List<Motion> GetMotions(int facing) {
+
+        List<Motion> motions = new();
+        motions.Add(Motion.M5);
+        if (Crouch())
+            motions.Insert(0, Motion.M2);
+        if (Forward(facing))
+            motions.Insert(0, Motion.M6);
+        if (QCF(facing))
+            motions.Insert(0, Motion.M236);
+        if (QCB(facing))
+            motions.Insert(0, Motion.M214);
+        if (BFCharge(facing))
+            motions.Insert(0, Motion.M46);
+        if (DUCharge(facing))
+            motions.Insert(0, Motion.M28);
+        if (DQCF(facing))
+            motions.Insert(0, Motion.M236236);
+        if (DQCB(facing))
+            motions.Insert(0, Motion.M214214);
+
+        
+        return motions;
+    }
+
+    private bool QCF(int facing) {
+        int stage = 0;
+        for (int i = 0; i < moveBufferSize; i++) {
+            Vector2Int dir = directionBuffer[(directionPointer - i + moveBufferSize) % moveBufferSize];
+
+            if (stage == 0 && dir.x == facing && dir.y != -1)
+                stage++;
+            else if (stage == 1 && dir.x == facing && dir.y == -1)
+                stage++;
+            else if (stage == 2 && dir.x == 0 && dir.y == -1)
+                stage++;
+
+            if (stage == 3)
+                return true;
+        }
+        return false;
+    }
+
+    private bool QCB(int facing) {
+        int stage = 0;
+        for (int i = 0; i < moveBufferSize; i++) {
+            Vector2Int dir = directionBuffer[(directionPointer - i + moveBufferSize) % moveBufferSize];
+
+            if (stage == 0 && dir.x == -facing && dir.y != -1)
+                stage++;
+            else if (stage == 1 && dir.x == -facing && dir.y == -1)
+                stage++;
+            else if (stage == 2 && dir.x == 0 && dir.y == -1)
+                stage++;
+
+            if (stage == 3)
+                return true;
+        }
+        return false;
+    }
+
+    private bool BFCharge(int facing) {
+        return Forward(facing) && backCharge >= fullCharge;
+    }
+
+    private bool DUCharge(int facing) {
+        return Jump() && downCharge >= fullCharge;
+    }
+
+    private bool DQCF(int facing) {
+        int stage = 0;
+        for (int i = 0; i < moveBufferSize; i++) {
+            Vector2Int dir = directionBuffer[(directionPointer - i + moveBufferSize) % moveBufferSize];
+
+            if (stage == 0 && dir.x == facing && dir.y != -1)
+                stage++;
+            else if (stage == 1 && dir.x == facing && dir.y == -1)
+                stage++;
+            else if (stage == 2 && dir.x == 0 && dir.y == -1)
+                stage++;
+            else if (stage == 3 && dir.x == facing && dir.y != -1)
+                stage++;
+            else if (stage == 4 && dir.x == facing && dir.y == -1)
+                stage++;
+            else if (stage == 5 && dir.x == 0 && dir.y == -1)
+                stage++;
+
+            if (stage == 6)
+                return true;
+        }
+        return false;
+    }
+
+    private bool DQCB(int facing) {
+        int stage = 0;
+        for (int i = 0; i < moveBufferSize; i++) {
+            Vector2Int dir = directionBuffer[(directionPointer - i + moveBufferSize) % moveBufferSize];
+
+            if (stage == 0 && dir.x == -facing && dir.y != -1)
+                stage++;
+            else if (stage == 1 && dir.x == -facing && dir.y == -1)
+                stage++;
+            else if (stage == 2 && dir.x == 0 && dir.y == -1)
+                stage++;
+            else if (stage == 3 && dir.x == -facing && dir.y != -1)
+                stage++;
+            else if (stage == 4 && dir.x == -facing && dir.y == -1)
+                stage++;
+            else if (stage == 5 && dir.x == 0 && dir.y == -1)
+                stage++;
+
+            if (stage == 6)
+                return true;
+        }
+        return false;
+    }
+
+    public bool ButtonPressed() {
+        if (inputBuffer[inputPointer] != null) {
+            foreach (var input in inputBuffer[inputPointer])
+                if (input.state == ButtonState.PRESSED)
+                    return true;
+        }
+        return false;
+    }
+
+    public List<Button> GetButtonThisFrame() {
+        List<Button> buttons = new();
+
+        if (inputBuffer[inputPointer] != null) {
+            foreach (var input in inputBuffer[inputPointer])
+                if (input.state == ButtonState.PRESSED)
+                    buttons.Add(input.button);
+        }
+
+        return buttons;
+    }
+
+    public void CheckCharge(int facing) {
+        if (backDecay > 0)
+            backDecay--;
+        else
+            backCharge = 0;
+
+        if (Backward(facing)) {
+            if (directionBuffer[(directionPointer - 1 + moveBufferSize) % moveBufferSize].x != -facing)
+                backCharge = 0;
+            backCharge++;
+            backDecay = chargeDecayThreshold;
+        }
+
+
+
+        if (downDecay > 0)
+            downDecay--;
+        else
+            downCharge = 0;
+
+        if (Crouch()) {
+            if (directionBuffer[(directionPointer - 1 + moveBufferSize) % moveBufferSize].y != -1)
+                downCharge = 0;
+            downCharge++;
+            downDecay = chargeDecayThreshold;
+        }
     }
 
 
@@ -180,6 +350,6 @@ public class InputParser : MonoBehaviour
     }
 
     public enum Action {
-        L1, L2, H1, H2, R, LH, LL, HH, RLL, RHH
+        L1, L2, L, H1, H2, H, R, LH, LL, HH, RLL, RHH
     }
 }

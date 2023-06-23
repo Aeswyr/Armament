@@ -7,10 +7,17 @@ using UnityEngine;
 public class ActionController : MonoBehaviour
 {
     [SerializeField] private GameObject hitboxPrefab;
-    [SerializeField] private MoveProperty property1, property2;
+    [SerializeField] private List<MoveProperty> weapon1;
+    [SerializeField] private List<MoveProperty> weapon2;
+    [SerializeField] private List<MoveProperty> extra;
+    [SerializeField] private List<MoveProperty> universal;
+    [SerializeField] private MoveProperty currentProperty;
 
+    bool launched = false;
+    int hitstunFrames = 0;
     int actionFrames = 0;
     int cancelFrames;
+    int karaFrames;
     CancelType cancelType;
     GameObject activeHitbox;
 
@@ -21,6 +28,9 @@ public class ActionController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (hitstunFrames > 0)
+            hitstunFrames--;
+
         if (actionFrames > 0)
             actionFrames--;
         else {
@@ -33,21 +43,18 @@ public class ActionController : MonoBehaviour
         else
             cancelType = CancelType.NONE;
 
-        
+        if (karaFrames > 0)
+            karaFrames--;
     }
 
     public bool Actionable() {
-        return actionFrames <= 0;
+        return actionFrames <= 0 && hitstunFrames <= 0 && !launched;
     }
 
-    public void FireMove(InputParser.Action button, InputParser.Motion motion, bool airborne) {
-
-        MoveProperty moveProperties = property1;
-        if (button == InputParser.Action.H1)
-            moveProperties = property2;
-
-        if ((actionFrames > 0 || activeHitbox != null)
-            && (cancelFrames <= 0 || moveProperties.MoveLevel <= cancelType || cancelType == CancelType.NONE))
+    public void FireMove(InputParser.Action button, List<InputParser.Motion> motions, bool airborne) {
+        MoveProperty property = GetMove(button, motions);
+        
+        if (property == null)
             return;
 
         if (activeHitbox != null) {
@@ -55,15 +62,74 @@ public class ActionController : MonoBehaviour
             activeHitbox = null;
         }
         
-
         activeHitbox = Instantiate(hitboxPrefab, transform);
         
         // setup for kara cancels : REMOVED KARA CANCELS (They're needlessly complex, and since Kara dash cancel and kara impact exist, they arent needed)
         //cancelFrames = 2;
         //cancelType = moveProperties.MoveLevel;
 
-        actionFrames = moveProperties.Duration;
-        activeHitbox.GetComponent<HitboxInfo>().Init(moveProperties, this);
+        actionFrames = property.Duration;
+        activeHitbox.GetComponent<HitboxInfo>().Init(property, this);
+    }
+
+    private MoveProperty GetMove(InputParser.Action button, List<InputParser.Motion> motions) {
+        if (button == InputParser.Action.L1 || button == InputParser.Action.H1) {
+            switch (button) {
+                case InputParser.Action.L1:
+                    button = InputParser.Action.L;
+                    break;
+                case InputParser.Action.H1:
+                    button = InputParser.Action.H;
+                    break;
+            }
+            foreach (var motion in motions) {
+                var property = SearchMoveList(button, motion, weapon1);
+                if (property != null)
+                    return property;
+            }
+        } else if (button == InputParser.Action.L2 || button == InputParser.Action.H2) {
+            switch (button) {
+                case InputParser.Action.L2:
+                    button = InputParser.Action.L;
+                    break;
+                case InputParser.Action.H2:
+                    button = InputParser.Action.H;
+                    break;
+            }
+            foreach (var motion in motions) {
+                var property = SearchMoveList(button, motion, weapon2);
+                if (property != null)
+                    return property;
+            }
+        } else if (button == InputParser.Action.LL || button == InputParser.Action.HH) {
+            foreach (var motion in motions) {
+                var property = SearchMoveList(button, motion, extra);
+                if (property != null)
+                    return property;
+            }
+        } else {
+            foreach (var motion in motions) {
+                var property = SearchMoveList(button, motion, universal);
+                if (property != null)
+                    return property;
+            }
+        }
+        return null;
+    }
+
+    private MoveProperty SearchMoveList(InputParser.Action action, InputParser.Motion motion, List<MoveProperty> list) {
+        foreach (var move in list) {
+            if (move.MatchInput(action, motion) && CheckValid(move))
+                return move;
+        }
+        return null;
+    }
+
+    private bool CheckValid(MoveProperty property) {
+        if ((actionFrames > 0 || activeHitbox != null)
+            && (cancelFrames <= 0 || property.MoveLevel <= cancelType || cancelType == CancelType.NONE))
+            return false;
+        return true;
     }
 
     public void SetCancellable(int frames, CancelType level) {
@@ -74,5 +140,28 @@ public class ActionController : MonoBehaviour
     public void SetCancellable(MoveProperty property) {
         cancelFrames = property.CancelWindow;
         cancelType = property.CancelLevel;
+    }
+
+    public void SetStun(int frames) {
+        if (launched)
+            return;
+        // if you're mid move, cleanup.
+        actionFrames = 0;
+        if (activeHitbox != null) {
+            Destroy(activeHitbox);
+            activeHitbox = null;
+        }
+
+        cancelFrames = 0;
+        cancelType = CancelType.NONE;
+
+        //set hitstun values
+        hitstunFrames = frames;
+    }
+
+    public void SetLaunched(bool state) {
+        if (state)
+            SetStun(0);
+        launched = state;
     }
 }

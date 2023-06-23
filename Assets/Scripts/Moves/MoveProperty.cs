@@ -10,13 +10,17 @@ public class MoveProperty : ScriptableObject {
     public string MoveName {
         get {return moveName;}
     }
+
+    [SerializeField] private InputParser.Action action;
+    [SerializeField] private InputParser.Motion motion;
+
     [SerializeField] private int damage;
     public int Damage {
         get {return damage;}
     }
-    [SerializeField] private int exhaust;
-    public int Exhaust {
-        get {return exhaust;}
+    [SerializeField] private int momentumDamage;
+    public int MomentumDamage {
+        get {return momentumDamage;}
     }
     [SerializeField] private int duration;
     public int Duration {
@@ -63,6 +67,11 @@ public class MoveProperty : ScriptableObject {
 
     [Header("On Block")]
     [SerializeField] private BlockStunType blockType;
+
+
+    public bool MatchInput(InputParser.Action action, InputParser.Motion motion) {
+        return this.action == action && this.motion == motion;
+    }
 }
 
 public enum StunType {
@@ -86,5 +95,5 @@ public enum BlockPropertyType {
 }
 
 public enum CancelType {
-    NONE, LIGHT, HEAVY, COMMAND, SPECIAL, SUPER, UNCANCELABLE
+    NONE, LIGHT, HEAVY, SPECIAL, SUPER, UNCANCELABLE
 }
