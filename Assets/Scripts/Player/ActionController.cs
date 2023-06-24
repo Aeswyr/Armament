@@ -62,6 +62,8 @@ public class ActionController : MonoBehaviour
             Destroy(activeHitbox);
             activeHitbox = null;
         }
+
+        actionFrames = property.Duration;
         
         activeHitbox = Instantiate(hitboxPrefab, transform);
         
@@ -69,7 +71,7 @@ public class ActionController : MonoBehaviour
         //cancelFrames = 2;
         //cancelType = moveProperties.MoveLevel;
 
-        actionFrames = property.Duration;
+        
         activeHitbox.GetComponent<HitboxInfo>().Init(property, this);
     }
 
@@ -145,7 +147,10 @@ public class ActionController : MonoBehaviour
     }
 
     public void SetCancellable(MoveProperty property) {
-        cancelFrames = property.CancelWindow;
+        if (property.CancelWindow == -1)
+            cancelFrames = actionFrames;
+        else
+            cancelFrames = property.CancelWindow;
         cancelType = property.CancelLevel;
     }
 

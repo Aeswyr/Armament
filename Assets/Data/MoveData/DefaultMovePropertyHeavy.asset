@@ -25,5 +25,5 @@ MonoBehaviour:
   blockProperty: 0
   moveLevel: 2
   cancelLevel: 2
-  cancelWindow: 15
+  cancelWindow: -1
   blockType: 0
