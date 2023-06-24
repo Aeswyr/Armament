@@ -105,7 +105,7 @@ public class PlayerController : MonoBehaviour
         facing = Fix64.Sign(GameManager.Instance.GetOtherPlayer(this).fTransform.position.x - fTransform.position.x);
         if (facing == 0)
             facing = 1;
-            
+
         input.CheckCharge(facing);
 
         Vec2Fix movement = fBody.velocity;
@@ -145,6 +145,8 @@ public class PlayerController : MonoBehaviour
                     movement.x += jumpSpeed * Fix64.Half * (Fix64)dashFacing;
                 dashFacing = 0;
             }
+        } else if (grounded) {
+            playerActions.UpdateMomentum(ref movement);
         }
         
         if (regenTimer > 0) {

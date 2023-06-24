@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FixMath.NET;
 
 // handles the activation of hitboxes based off of specific button presses and the management of those hitboxes,
 // as well as move cancellation validity and current state (hitstun/blockstun)
@@ -115,6 +116,12 @@ public class ActionController : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public void UpdateMomentum(ref Vec2Fix movement) {
+        movement.x = (Fix64)0.7f * movement.x;
+        if (Fix64.Abs(movement.x) < (Fix64)0.1f)
+            movement.x = Fix64.Zero;
     }
 
     private MoveProperty SearchMoveList(InputParser.Action action, InputParser.Motion motion, List<MoveProperty> list) {

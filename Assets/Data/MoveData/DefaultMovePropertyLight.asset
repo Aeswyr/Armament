@@ -15,7 +15,7 @@ MonoBehaviour:
   moveName: default
   action: 2
   motion: 8
-  damage: 15
+  damage: 8
   momentumDamage: 5
   duration: 20
   proration:
