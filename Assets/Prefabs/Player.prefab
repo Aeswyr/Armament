@@ -204,12 +204,10 @@ MonoBehaviour:
     m_rawValue: 17179869184
   jumpHeight:
     m_rawValue: 42949672960
-  maxHealth: 250
+  maxHealth: 500
   regenDelay: 120
-  regenPerTicks: 10
-  maxMeter: 100
-  maxMomentum: 120
-  momentumPerTicks: 7
+  regenPerTicks: 3
+  maxMeter: 1000
 --- !u!114 &4348463835694102379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,7 +244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   input: {fileID: 0}
   moveBufferSize: 25
-  inputBufferSize: 10
+  inputBufferSize: 6
   doubleTapRange: 6
   fullCharge: 40
   chargeDecayThreshold: 10

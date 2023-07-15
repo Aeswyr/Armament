@@ -13,29 +13,20 @@ public class ResourceDisplayController : MonoBehaviour
     [SerializeField] private Image shieldBar;
 
     [Header("Meter")]
-    [SerializeField] private TextMeshProUGUI meterStocks;
     [SerializeField] private Image meterBar;
-
-    [Header("Exhaust")]
-    [SerializeField] private Image exhaustBar;
-    [SerializeField] private Image rechargeBar;
-    [SerializeField] private Color highExhaust;
-    [SerializeField] private Color lowExhaust;
+    [SerializeField] private Image stocksBar;
 
     int maxHealth;
     int health;
     int damageValue;
     int maxMeter;
-    int maxExhaust;
     float damageTime;
     [SerializeField] private float damageDelay;
     
     // call to setup the health bar before use
-    public void Setup(int maxHealth, int maxMeter, int maxExhaust) {
+    public void Setup(int maxHealth, int maxMeter) {
 
         this.maxMeter = maxMeter;
-        
-        this.maxExhaust = maxExhaust;
 
         this.maxHealth = maxHealth;
         damageValue = maxHealth;
@@ -71,35 +62,12 @@ public class ResourceDisplayController : MonoBehaviour
 
     public void SetMeter(int val) {
         meterBar.fillAmount = (float)val / maxMeter;
+
+        stocksBar.fillAmount = (float)(4 * val / maxMeter) / 4;
     }
-
-    public void SetMeterStocks(int amt) {
-        meterStocks.text = amt.ToString();
-    }
-
-    public void  SetExhaust(int val, bool exhausted) {
-        if (exhausted) {
-            exhaustBar.gameObject.SetActive(false);
-            rechargeBar.gameObject.SetActive(true);
-
-            rechargeBar.fillAmount = (float)val / maxExhaust;
-            return;
-        }
-
-        exhaustBar.gameObject.SetActive(true);
-        rechargeBar.gameObject.SetActive(false);
-
-        if (val > maxExhaust / 2)
-            exhaustBar.color = highExhaust;
-        else 
-            exhaustBar.color = lowExhaust;
-
-        exhaustBar.fillAmount = (float)val / maxExhaust;
-    }
-
     void FixedUpdate() {
         if (damageValue > health && Time.time > damageDelay + damageTime) {
-            damageValue--;
+            damageValue -= 2;
             UpdateDamage();
         }
     }

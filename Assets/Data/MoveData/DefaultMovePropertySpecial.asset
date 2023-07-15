@@ -13,17 +13,23 @@ MonoBehaviour:
   m_Name: DefaultMovePropertySpecial
   m_EditorClassIdentifier: 
   moveName: default
+  moveType: 2
   action: 5
   motion: 0
-  damage: 20
-  momentumDamage: 15
+  airOk: 0
   duration: 60
-  proration:
-    m_rawValue: 4294967296
-  forcedProration:
-    m_rawValue: 4294967296
-  blockProperty: 0
-  moveLevel: 3
-  cancelLevel: 3
-  cancelWindow: -1
-  blockType: 0
+  counterhitDuration: 0
+  hitData:
+    damage: 40
+    minimumDamage: 1
+    proration:
+      m_rawValue: 3435973837
+    forcedProration:
+      m_rawValue: 4294967296
+    blockProperty: 0
+    blockType: 0
+  cancelData:
+    moveLevel: 3
+    cancelLevel: 3
+    hasWindow: 0
+    cancelWindow: 0

@@ -16,6 +16,7 @@ public class ActionController : MonoBehaviour
 
     bool launched = false;
     int hitstunFrames = 0;
+    int blockstunFrames = 0;
     int actionFrames = 0;
     int cancelFrames;
     int karaFrames;
@@ -31,6 +32,9 @@ public class ActionController : MonoBehaviour
     {
         if (hitstunFrames > 0)
             hitstunFrames--;
+
+        if (blockstunFrames > 0)
+            blockstunFrames--;
 
         if (actionFrames > 0)
             actionFrames--;
@@ -49,14 +53,14 @@ public class ActionController : MonoBehaviour
     }
 
     public bool Actionable() {
-        return actionFrames <= 0 && hitstunFrames <= 0 && !launched;
+        return actionFrames <= 0 && blockstunFrames <= 0 && hitstunFrames <= 0 && !launched;
     }
 
-    public void FireMove(InputParser.Action button, List<InputParser.Motion> motions, bool airborne) {
-        MoveProperty property = GetMove(button, motions);
+    public MoveProperty FireMove(InputParser.Action button, List<InputParser.Motion> motions, bool airborne) {
+        MoveProperty property = GetMove(button, motions, airborne);
         
         if (property == null)
-            return;
+            return null;
 
         if (activeHitbox != null) {
             Destroy(activeHitbox);
@@ -71,11 +75,12 @@ public class ActionController : MonoBehaviour
         //cancelFrames = 2;
         //cancelType = moveProperties.MoveLevel;
 
-        
         activeHitbox.GetComponent<HitboxInfo>().Init(property, this);
+
+        return property;
     }
 
-    private MoveProperty GetMove(InputParser.Action button, List<InputParser.Motion> motions) {
+    private MoveProperty GetMove(InputParser.Action button, List<InputParser.Motion> motions, bool airborne) {
         if (button == InputParser.Action.L1 || button == InputParser.Action.H1) {
             switch (button) {
                 case InputParser.Action.L1:
@@ -86,7 +91,7 @@ public class ActionController : MonoBehaviour
                     break;
             }
             foreach (var motion in motions) {
-                var property = SearchMoveList(button, motion, weapon1);
+                var property = SearchMoveList(button, motion, airborne, weapon1);
                 if (property != null)
                     return property;
             }
@@ -100,19 +105,19 @@ public class ActionController : MonoBehaviour
                     break;
             }
             foreach (var motion in motions) {
-                var property = SearchMoveList(button, motion, weapon2);
+                var property = SearchMoveList(button, motion, airborne, weapon2);
                 if (property != null)
                     return property;
             }
         } else if (button == InputParser.Action.LL || button == InputParser.Action.HH) {
             foreach (var motion in motions) {
-                var property = SearchMoveList(button, motion, extra);
+                var property = SearchMoveList(button, motion, airborne, extra);
                 if (property != null)
                     return property;
             }
         } else {
             foreach (var motion in motions) {
-                var property = SearchMoveList(button, motion, universal);
+                var property = SearchMoveList(button, motion, airborne, universal);
                 if (property != null)
                     return property;
             }
@@ -126,9 +131,9 @@ public class ActionController : MonoBehaviour
             movement.x = Fix64.Zero;
     }
 
-    private MoveProperty SearchMoveList(InputParser.Action action, InputParser.Motion motion, List<MoveProperty> list) {
+    private MoveProperty SearchMoveList(InputParser.Action action, InputParser.Motion motion, bool airborne, List<MoveProperty> list) {
         foreach (var move in list) {
-            if (move.MatchInput(action, motion) && CheckValid(move))
+            if (move.MatchInput(action, motion, airborne) && CheckValid(move))
                 return move;
         }
         return null;
@@ -136,7 +141,7 @@ public class ActionController : MonoBehaviour
 
     private bool CheckValid(MoveProperty property) {
         if ((actionFrames > 0 || activeHitbox != null)
-            && (cancelFrames <= 0 || property.MoveLevel <= cancelType || cancelType == CancelType.NONE))
+            && (cancelFrames <= 0 || property.CancelData.MoveLevel <= cancelType || cancelType == CancelType.NONE))
             return false;
         return true;
     }
@@ -147,16 +152,33 @@ public class ActionController : MonoBehaviour
     }
 
     public void SetCancellable(MoveProperty property) {
-        if (property.CancelWindow == -1)
+        if (!property.CancelData.HasWindow)
             cancelFrames = actionFrames;
         else
-            cancelFrames = property.CancelWindow;
-        cancelType = property.CancelLevel;
+            cancelFrames = property.CancelData.CancelWindow;
+        cancelType = property.CancelData.CancelLevel;
     }
 
-    public void SetStun(int frames) {
+    public void SetHitstun(int frames) {
         if (launched)
             return;
+        // if you're mid move, cleanup.
+        actionFrames = 0;
+        if (activeHitbox != null) {
+            Destroy(activeHitbox);
+            activeHitbox = null;
+        }
+
+        blockstunFrames = 0;
+
+        cancelFrames = 0;
+        cancelType = CancelType.NONE;
+
+        //set hitstun values
+        hitstunFrames = frames;
+    }
+
+    public void SetBlockstun(int frames) {
         // if you're mid move, cleanup.
         actionFrames = 0;
         if (activeHitbox != null) {
@@ -168,12 +190,16 @@ public class ActionController : MonoBehaviour
         cancelType = CancelType.NONE;
 
         //set hitstun values
-        hitstunFrames = frames;
+        blockstunFrames = frames;
     }
 
     public void SetLaunched(bool state) {
         if (state)
-            SetStun(0);
+            SetHitstun(0);
         launched = state;
+    }
+
+    public bool IsInCombo() {
+        return launched || hitstunFrames > 0;
     }
 }
