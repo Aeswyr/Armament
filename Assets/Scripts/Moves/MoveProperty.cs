@@ -39,6 +39,10 @@ public class MoveProperty : ScriptableObject {
     public CancelProperty CancelData {
         get {return cancelData;}
     }
+    [SerializeField] private FollowupProperty followupData;
+    public FollowupProperty FollowupData {
+        get {return followupData;}
+    }
     
     public bool MatchInput(InputParser.Action action, InputParser.Motion motion, bool airborne) {
         return this.action == action && this.motion == motion && airborne == airOk;
@@ -122,7 +126,7 @@ public class MoveProperty : ScriptableObject {
 }
 
 [Serializable] public struct FollowupProperty {
-    
+    public List<MoveProperty> followups;
 }
 
 public enum StunType {

@@ -230,8 +230,6 @@ public class PlayerController : MonoBehaviour
     }
 
     public bool IsBlocking(BlockPropertyType blockProperty) {
-        return true;
-
         if (blockProperty == BlockPropertyType.THROW)
             return false;
         

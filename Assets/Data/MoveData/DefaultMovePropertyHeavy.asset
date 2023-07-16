@@ -29,7 +29,9 @@ MonoBehaviour:
     blockProperty: 0
     blockType: 0
   cancelData:
-    moveLevel: 2
-    cancelLevel: 2
+    moveLevel: 3
+    cancelLevel: 3
     hasWindow: 0
     cancelWindow: 0
+  followupData:
+    followups: []

@@ -10,8 +10,10 @@ public class ActionController : MonoBehaviour
     [SerializeField] private GameObject hitboxPrefab;
     [SerializeField] private List<MoveProperty> weapon1;
     [SerializeField] private List<MoveProperty> weapon2;
-    [SerializeField] private List<MoveProperty> extra;
     [SerializeField] private List<MoveProperty> universal;
+    [SerializeField] private List<MoveProperty> extra;
+    [SerializeField] private List<MoveProperty> followups;
+    int followupIndex; // 0 is no followups/not set, 1 is weapon 1, 2 is weapon 2, 3 is extra
     [SerializeField] private MoveProperty currentProperty;
 
     bool launched = false;
@@ -41,6 +43,7 @@ public class ActionController : MonoBehaviour
         else {
             Destroy(activeHitbox);
             activeHitbox = null;
+            followups = null;
         }
 
         if (cancelFrames > 0)
@@ -66,6 +69,7 @@ public class ActionController : MonoBehaviour
             Destroy(activeHitbox);
             activeHitbox = null;
         }
+        followups = null;
 
         actionFrames = property.Duration;
         
@@ -76,6 +80,9 @@ public class ActionController : MonoBehaviour
         //cancelType = moveProperties.MoveLevel;
 
         activeHitbox.GetComponent<HitboxInfo>().Init(property, this);
+
+        if (property.FollowupData.followups != null && property.FollowupData.followups.Count > 0)
+            followups = property.FollowupData.followups;
 
         return property;
     }
@@ -91,9 +98,17 @@ public class ActionController : MonoBehaviour
                     break;
             }
             foreach (var motion in motions) {
-                var property = SearchMoveList(button, motion, airborne, weapon1);
-                if (property != null)
+                MoveProperty property = null;
+
+                if (followupIndex == 1 && followups != null)
+                    property = SearchMoveList(button, motion, airborne, followups);
+                if (property == null)
+                    property = SearchMoveList(button, motion, airborne, weapon1);
+                
+                if (property != null) {
+                    followupIndex = 1;
                     return property;
+                }
             }
         } else if (button == InputParser.Action.L2 || button == InputParser.Action.H2) {
             switch (button) {
@@ -105,15 +120,31 @@ public class ActionController : MonoBehaviour
                     break;
             }
             foreach (var motion in motions) {
-                var property = SearchMoveList(button, motion, airborne, weapon2);
-                if (property != null)
+                MoveProperty property = null;
+                
+                if (followupIndex == 1 && followups != null)
+                    property = SearchMoveList(button, motion, airborne, followups);
+                if (property == null)
+                    property = SearchMoveList(button, motion, airborne, weapon2);
+                
+                if (property != null) {
+                    followupIndex = 2;
                     return property;
+                }
             }
         } else if (button == InputParser.Action.LL || button == InputParser.Action.HH) {
             foreach (var motion in motions) {
-                var property = SearchMoveList(button, motion, airborne, extra);
-                if (property != null)
+                MoveProperty property = null;
+                
+                if (followupIndex == 1 && followups != null)
+                    property = SearchMoveList(button, motion, airborne, followups);
+                if (property == null)
+                    property = SearchMoveList(button, motion, airborne, extra);
+                
+                if (property != null) {
+                    followupIndex = 3;
                     return property;
+                }
             }
         } else {
             foreach (var motion in motions) {
@@ -163,6 +194,8 @@ public class ActionController : MonoBehaviour
         if (launched)
             return;
         // if you're mid move, cleanup.
+        if (followups != null)
+            followups = null;
         actionFrames = 0;
         if (activeHitbox != null) {
             Destroy(activeHitbox);
@@ -180,6 +213,8 @@ public class ActionController : MonoBehaviour
 
     public void SetBlockstun(int frames) {
         // if you're mid move, cleanup.
+        if (followups != null)
+            followups = null;
         actionFrames = 0;
         if (activeHitbox != null) {
             Destroy(activeHitbox);

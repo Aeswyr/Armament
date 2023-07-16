@@ -226,9 +226,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 28ab2fbd6c77c534693c83700b49abb3, type: 2}
   - {fileID: 11400000, guid: cf9b0baa11350a542a344635e6a39903, type: 2}
   - {fileID: 11400000, guid: 522557dbfd2124d4288c16842969e0aa, type: 2}
+  - {fileID: 11400000, guid: 4aa379a25d0910249a850e7869f85f0a, type: 2}
   weapon2: []
-  extra: []
   universal: []
+  extra: []
+  followups: []
   currentProperty: {fileID: 0}
 --- !u!114 &7598314718330134154
 MonoBehaviour:

@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b37e7145e1dde4c4f83291f1c2f89691, type: 3}
-  m_Name: DefaultMovePropertySpecial
+  m_Name: DefaultMovePropertyRekka1
   m_EditorClassIdentifier: 
   moveName: default
   moveType: 2
-  action: 5
-  motion: 1
+  action: 2
+  motion: 0
   airOk: 0
   duration: 60
   counterhitDuration: 0
   hitData:
-    damage: 40
+    damage: 20
     minimumDamage: 1
     proration:
       m_rawValue: 3435973837
@@ -29,9 +29,10 @@ MonoBehaviour:
     blockProperty: 0
     blockType: 0
   cancelData:
-    moveLevel: 4
+    moveLevel: 5
     cancelLevel: 4
     hasWindow: 0
     cancelWindow: 0
   followupData:
-    followups: []
+    followups:
+    - {fileID: 11400000, guid: 6dce639c250ffc045b41c9788a878a01, type: 2}
