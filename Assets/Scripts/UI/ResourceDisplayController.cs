@@ -15,21 +15,37 @@ public class ResourceDisplayController : MonoBehaviour
     [Header("Meter")]
     [SerializeField] private Image meterBar;
     [SerializeField] private Image stocksBar;
+    
+    [Header("Break")]
+    [SerializeField] private Image burstBar;
+    [SerializeField] private Color burstCharging;
+    [SerializeField] private Color burstFull;
+
+    [Header("Guard")]
+    [SerializeField] private Image guardBar;
+    [SerializeField] private Color guardCharging;
+    [SerializeField] private Color guardReady;
 
     int maxHealth;
     int health;
     int damageValue;
     int maxMeter;
+    int maxBurst;
+    int maxGuard;
     float damageTime;
     [SerializeField] private float damageDelay;
     
     // call to setup the health bar before use
-    public void Setup(int maxHealth, int maxMeter) {
+    public void Setup(int maxHealth, int maxMeter, int maxBurst, int maxGuard) {
 
         this.maxMeter = maxMeter;
 
         this.maxHealth = maxHealth;
         damageValue = maxHealth;
+
+        this.maxBurst = maxBurst;
+
+        this.maxGuard = maxGuard;
 
         UpdateDamage();
     }
@@ -65,6 +81,23 @@ public class ResourceDisplayController : MonoBehaviour
 
         stocksBar.fillAmount = (float)(4 * val / maxMeter) / 4;
     }
+
+    public void SetBurst(int val) {
+        burstBar.fillAmount = (float)val / maxBurst;
+
+        burstBar.color = burstCharging;
+        if (val >= maxBurst)
+            burstBar.color = burstFull;
+    }
+
+    public void SetGuard(int val, bool usable) {
+        guardBar.fillAmount = (float)val / maxGuard;
+
+        guardBar.color = guardCharging;
+        if (usable)
+            guardBar.color = guardReady;
+    }
+
     void FixedUpdate() {
         if (damageValue > health && Time.time > damageDelay + damageTime) {
             damageValue -= 2;

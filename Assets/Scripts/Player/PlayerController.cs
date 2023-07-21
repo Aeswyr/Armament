@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Fix64 jumpHeight;
     [SerializeField] private int maxHealth;
 
+
     private int m_health;
     private int health {
         get {return m_health;}
@@ -55,6 +56,35 @@ public class PlayerController : MonoBehaviour
             resourceDisplay.SetMeter(m_meter);
         }
     }
+    [SerializeField] private Fix64 dmgMeterScalar;
+
+    [SerializeField] private int maxBurst;
+    private int m_burst;
+    private int burst {
+        get {return m_burst;}
+        set {
+            resourceDisplay.SetBurst(value);
+            m_burst = value;
+        }
+    }
+
+    [SerializeField] private int maxGuard;
+    private int m_guard;
+    private int guard {
+        get {return m_guard;}
+        set {
+            if (value <= 0) {
+                guardUsable = false;
+                guardRegenTick = guardDelay;
+                value = 0;
+            }
+            resourceDisplay.SetGuard(value, guardUsable);
+            m_guard = value;
+        }
+    }
+    private bool guardUsable;
+    private int guardRegenTick;
+    private int guardDelay = 3;
 
     Fix64 proration = Fix64.One;
 
@@ -65,14 +95,16 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        resourceDisplay.Setup(maxHealth, maxMeter);
+        resourceDisplay.Setup(maxHealth, maxMeter, maxBurst, maxGuard);
 
         health = maxHealth;
         meter = 0;
+        burst = 0;
+
+        guardUsable = true;
+        guard = maxGuard;
 
         hurtBox.onCollisionEnter += OnHit;
-
-        
     }
 
     // Update is called once per frame
@@ -140,6 +172,20 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (!guardUsable) {
+            if (guardRegenTick > 0) {
+                guardRegenTick--;
+            } else {
+                if (guard + 2 >= maxGuard)
+                    guardUsable = true;
+                guard += 2;
+                if (guard > maxGuard)
+                    guard = maxGuard;
+
+                guardRegenTick = guardDelay;
+            }
+        } 
+
         MoveProperty firedMove = null;
 
         if (input.GetButtonState(InputParser.Button.H1, InputParser.ButtonState.PRESSED)) {
@@ -184,17 +230,22 @@ public class PlayerController : MonoBehaviour
         hitInfo.Owner.SetCancellable(hitInfo.Properties);
         
         if (IsBlocking(hitInfo.Properties.HitData.BlockProperty)) { //handle blocking situation
+            burst += 4;
+
             regenTimer = regenDelay;
             regenTick = 0;
 
-            hitInfo.Owner.transform.GetComponent<PlayerController>().meter += 10;
-            meter += 20;
+            hitInfo.Owner.transform.GetComponent<PlayerController>().meter += 5;
+            meter += 10;
+
+            if (guardUsable)
+                guard -= Mathf.Max(1, damage / 2) + 5;
 
             if (health > 1) { // convert chip to white health
-                Fix64 chip = (Fix64)0.15f;
+                int chip = 6;
                 if ((int)hitInfo.Properties.MoveType >= (int)MoveType.SPECIAL)
-                    chip = (Fix64)0.3f;
-                damage = (int)Fix64.Max(Fix64.One, (Fix64)damage * chip);
+                    chip = 3;
+                damage = Mathf.Max(1, damage / chip);
                 int realAmt = damage;
                 if (health > damage + 1) {
                     health -= damage;
@@ -214,7 +265,9 @@ public class PlayerController : MonoBehaviour
             playerActions.SetBlockstun(10);
             
         } else { //handle unblocked situation
-            hitInfo.Owner.transform.GetComponent<PlayerController>().meter += damage;
+            burst += 10;
+
+            hitInfo.Owner.transform.GetComponent<PlayerController>().meter += (int)Fix64.Max((Fix64)5, (Fix64)damage * dmgMeterScalar);
 
             health -= Mathf.Max(hitInfo.Properties.HitData.MinimumDamage, damage);
             whiteHealth = 0;

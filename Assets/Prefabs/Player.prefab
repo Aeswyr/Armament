@@ -207,7 +207,11 @@ MonoBehaviour:
   maxHealth: 500
   regenDelay: 120
   regenPerTicks: 3
-  maxMeter: 1000
+  maxMeter: 500
+  dmgMeterScalar:
+    m_rawValue: 2576980378
+  maxBurst: 500
+  maxGuard: 500
 --- !u!114 &4348463835694102379
 MonoBehaviour:
   m_ObjectHideFlags: 0
