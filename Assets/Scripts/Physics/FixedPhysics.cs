@@ -115,6 +115,10 @@ public struct Vec2Fix : IEquatable<Vec2Fix>, IComparable<Vec2Fix> {
         return new Vec2Fix(a * b.x, a * b.y);
     }
 
+    public static Vec2Fix operator*(Vec2Fix a, Vec2Fix b) {
+        return new Vec2Fix(a.x * b.x, a.y * b.y);
+    }
+
     public static bool operator ==(Vec2Fix a, Vec2Fix b) {
         return a.x == b.x && a.y == b.y;
     }

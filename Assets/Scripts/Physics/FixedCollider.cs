@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FixMath.NET;
 
 public abstract class FixedCollider : MonoBehaviour
 {
@@ -26,7 +27,6 @@ public abstract class FixedCollider : MonoBehaviour
         get;
         set;
     }
-
 
     //dont interact with this. if you do and stuff breaks, thats your problem, not mine
     public delegate void OnPhysicsResolution(CollisionInfo info);

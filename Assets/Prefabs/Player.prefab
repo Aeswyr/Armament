@@ -193,6 +193,7 @@ MonoBehaviour:
   fCollider: {fileID: 8317143237852987168}
   hurtBox: {fileID: 2019712340192455076}
   playerActions: {fileID: 4348463835694102379}
+  model: {fileID: 8131043175466299974}
   resourceDisplay: {fileID: 0}
   forwardSpeed:
     m_rawValue: 17179869184
@@ -337,38 +338,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6283de571d72f074193d1b8649aafc26,
         type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6283de571d72f074193d1b8649aafc26,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6283de571d72f074193d1b8649aafc26,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6283de571d72f074193d1b8649aafc26,
-        type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6283de571d72f074193d1b8649aafc26,
         type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6283de571d72f074193d1b8649aafc26,
-        type: 3}
       propertyPath: m_LocalRotation.y
       value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6283de571d72f074193d1b8649aafc26,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6283de571d72f074193d1b8649aafc26,
         type: 3}
@@ -467,6 +443,12 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: fbdad3172f455294ba2b7d60b1dc6f18, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6283de571d72f074193d1b8649aafc26, type: 3}
+--- !u!1 &8131043175466299974 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6283de571d72f074193d1b8649aafc26,
+    type: 3}
+  m_PrefabInstance: {fileID: 8941384009037205271}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8907157013255432444 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6283de571d72f074193d1b8649aafc26,

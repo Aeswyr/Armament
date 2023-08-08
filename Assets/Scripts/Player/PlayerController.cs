@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private FixedCollider fCollider;
     [SerializeField] private FixedCollider hurtBox;
     [SerializeField] private ActionController playerActions;
+    [SerializeField] private GameObject model;
 
     [Header("UI")]
     [SerializeField] private ResourceDisplayController resourceDisplay;
@@ -75,6 +76,7 @@ public class PlayerController : MonoBehaviour
         set {
             if (value <= 0) {
                 guardUsable = false;
+                whiteHealth = 0;
                 guardRegenTick = guardDelay;
                 value = 0;
             }
@@ -91,6 +93,8 @@ public class PlayerController : MonoBehaviour
 // 1 is facing right, -1 facing left
     private int facing = 1;
     private int dashFacing = 0;
+
+    private int visualFacing = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -113,6 +117,9 @@ public class PlayerController : MonoBehaviour
         if (!playerActions.IsInCombo())
             proration = Fix64.One;
 
+        int lastFacing = facing;
+        int lastVisualFacing = visualFacing;
+
         facing = Fix64.Sign(GameManager.Instance.GetOtherPlayer(this).fTransform.position.x - fTransform.position.x);
         if (facing == 0)
             facing = 1;
@@ -124,6 +131,14 @@ public class PlayerController : MonoBehaviour
         
         
         if (playerActions.Actionable() && grounded) {
+            Vector3 scale = model.transform.localScale;
+            scale.z = facing;
+            visualFacing = facing;
+            model.transform.localScale = scale;
+            if (lastVisualFacing != visualFacing)
+                ((FixedCompositeCollider)hurtBox).SetXScale(visualFacing);
+
+            
             if (input.Forward(facing)) {
                 movement.x = forwardSpeed * (Fix64)facing;
             } else if (input.Backward(facing)) 
@@ -138,7 +153,7 @@ public class PlayerController : MonoBehaviour
             }
 
             if (dashFacing != 0) {
-                meter += 2;
+                meter += 1;
                 movement.x = dashSpeed * (Fix64)dashFacing;
             }
 
@@ -189,33 +204,41 @@ public class PlayerController : MonoBehaviour
         MoveProperty firedMove = null;
 
         if (input.GetButtonState(InputParser.Button.H1, InputParser.ButtonState.PRESSED)) {
-            var move = playerActions.FireMove(InputParser.Action.H1, input.GetMotions(facing), !grounded);
+            var move = playerActions.FireMove(InputParser.Action.H1, input.GetMotions(facing), !grounded, facing);
             if (move != null)
                 firedMove = move;
         }
         if (input.GetButtonState(InputParser.Button.L1, InputParser.ButtonState.PRESSED)) {
-            var move = playerActions.FireMove(InputParser.Action.L1, input.GetMotions(facing), !grounded);
+            var move = playerActions.FireMove(InputParser.Action.L1, input.GetMotions(facing), !grounded, facing);
             if (move != null)
                 firedMove = move;
         }
         if (input.GetButtonState(InputParser.Button.H2, InputParser.ButtonState.PRESSED)) {
-            var move = playerActions.FireMove(InputParser.Action.H2, input.GetMotions(facing), !grounded);
+            var move = playerActions.FireMove(InputParser.Action.H2, input.GetMotions(facing), !grounded, facing);
             if (move != null)
                 firedMove = move;
         }
         if (input.GetButtonState(InputParser.Button.L2, InputParser.ButtonState.PRESSED)) {
-            var move = playerActions.FireMove(InputParser.Action.L2, input.GetMotions(facing), !grounded);
+            var move = playerActions.FireMove(InputParser.Action.L2, input.GetMotions(facing), !grounded, facing);
             if (move != null)
                 firedMove = move;
         }
         if (input.GetButtonState(InputParser.Button.R, InputParser.ButtonState.PRESSED)) {
-            var move = playerActions.FireMove(InputParser.Action.R, input.GetMotions(facing), !grounded);
+            var move = playerActions.FireMove(InputParser.Action.R, input.GetMotions(facing), !grounded, facing);
             if (move != null)
                 firedMove = move;
         }
 
-        if (firedMove != null && firedMove.MoveType == MoveType.SPECIAL)
-            meter += 20;
+        if (firedMove != null) {
+            if (firedMove.MoveType == MoveType.SPECIAL)
+                meter += 20;
+
+            Vector3 scale = model.transform.localScale;
+            scale.z = facing;
+            visualFacing = facing;
+            model.transform.localScale = scale;
+            ((FixedCompositeCollider)hurtBox).SetXScale(facing);
+        }
 
         fBody.velocity = movement;
     }
@@ -249,10 +272,16 @@ public class PlayerController : MonoBehaviour
                 int realAmt = damage;
                 if (health > damage + 1) {
                     health -= damage;
-                    whiteHealth += damage;
+                    if (guardUsable)
+                        whiteHealth += damage;
+                    else
+                        whiteHealth = 0;
                 } else {
                     realAmt = health - 1;
-                    whiteHealth += realAmt;
+                    if (guardUsable)
+                        whiteHealth += realAmt;
+                    else
+                        whiteHealth = 0;
                     health = 1;
                 }
             } else if (whiteHealth > 0) {
@@ -283,6 +312,8 @@ public class PlayerController : MonoBehaviour
     }
 
     public bool IsBlocking(BlockPropertyType blockProperty) {
+        return true;
+
         if (blockProperty == BlockPropertyType.THROW)
             return false;
         

@@ -59,7 +59,7 @@ public class ActionController : MonoBehaviour
         return actionFrames <= 0 && blockstunFrames <= 0 && hitstunFrames <= 0 && !launched;
     }
 
-    public MoveProperty FireMove(InputParser.Action button, List<InputParser.Motion> motions, bool airborne) {
+    public MoveProperty FireMove(InputParser.Action button, List<InputParser.Motion> motions, bool airborne, int facing) {
         MoveProperty property = GetMove(button, motions, airborne);
         
         if (property == null)
@@ -74,6 +74,9 @@ public class ActionController : MonoBehaviour
         actionFrames = property.Duration;
         
         activeHitbox = Instantiate(hitboxPrefab, transform);
+
+        activeHitbox.GetComponent<FixedCompositeCollider>().SetXScale(facing);
+        
         
         // setup for kara cancels : REMOVED KARA CANCELS (They're needlessly complex, and since Kara dash cancel and kara impact exist, they arent needed)
         //cancelFrames = 2;
