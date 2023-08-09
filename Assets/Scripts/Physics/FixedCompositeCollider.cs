@@ -15,9 +15,11 @@ public class FixedCompositeCollider : FixedCollider
     private Fix64 xScale = Fix64.One;
 
     public void SetXScale(int scale) {
-        xScale = (Fix64)scale;
-        CalculateBounding();
-        this.MarkDirty();
+        if ((Fix64)scale != xScale) {
+            xScale = (Fix64)scale;
+            CalculateBounding();
+            this.MarkDirty();
+        }
     }
     // checks if this collider is colliding with the provided other collider
     public override bool Colliding(FixedCollider other) {

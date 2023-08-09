@@ -135,9 +135,7 @@ public class PlayerController : MonoBehaviour
             scale.z = facing;
             visualFacing = facing;
             model.transform.localScale = scale;
-            if (lastVisualFacing != visualFacing)
-                ((FixedCompositeCollider)hurtBox).SetXScale(visualFacing);
-
+            ((FixedCompositeCollider)hurtBox).SetXScale(visualFacing);
             
             if (input.Forward(facing)) {
                 movement.x = forwardSpeed * (Fix64)facing;
@@ -312,7 +310,6 @@ public class PlayerController : MonoBehaviour
     }
 
     public bool IsBlocking(BlockPropertyType blockProperty) {
-        return true;
 
         if (blockProperty == BlockPropertyType.THROW)
             return false;
